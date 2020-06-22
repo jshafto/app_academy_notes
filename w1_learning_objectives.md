@@ -5,13 +5,12 @@
 1. Given a working REPL interface, write and execute a statement that will print “hello world” using console.log
     - `console.log("hello world");`
     - `console.log('hello' + ' world');`
-1. Identify that strings are a list of characters defined by using double or single quotes
+2. Identify that strings are a list of characters defined by using double or single quotes
     - `"I am a string"`
     - `'I am a string'`
     - don't use single quotes if you want to use an apostrophe, e.g. `'I'm a string'`
     - don't use double quotes if you want to include a quote, e.g. `"She said, "I am a string.""`
-1. Given an arithmetic expression using `+`, `-`, `*`, `/`, `%`, compute its value
-    - examples:
+3. Given an arithmetic expression using `+`, `-`, `*`, `/`, `%`, compute its value
     - addition: `10 + 3 => 13`
     - subtraction: `10 - 3 => 7`
     - multiplication: `10 * 3 => 30`
@@ -19,7 +18,7 @@
     - modulo (computes remainder after division): `10 % 3 => 1`
 1. Given an expression, predict if its value is `NaN`
     - Broadly, performing numerical operations on non-numerical types will yield NaN
-    - e.g. `"hi"/8 => NaN`
+    - e.g `"hi"/8` or `3 * [1,2,3]` will return `NaN`
 1. Construct the truth tables for `&&`, `||`, `!`.
     - `false && false => false`
     - `false && true  => false`
@@ -40,7 +39,7 @@
     - Remember BODMAS: Brackets, Orders(powers), Division, Multiplication, Addition, Subtraction.
     - more info on the MDN [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence)
 1. Given an expression, use the grouping operator to change it’s evaluation
-    - e.g. `(2+3) * 10 => `
+    - e.g. `2 + 3 * 10 => 32` `(2 + 3) * 10 => 60`
 1. Given expressions using `==` and `===`, compute their values
     - the strict `===` only yields equality for identical values
         - e.g. `"5" === 5 => false`
@@ -176,11 +175,22 @@ function wordWithinArray(array, word) {
     return returnBool;
 };
 ```
-- Define that an array literal is an ordered list of values defined by using bracket and individual values are read by indexing.
+- Identify that an array literal is an ordered list of values defined by using bracket and individual values are read by indexing.
 ```javascript
-
+let arr = ["app", "academy"];
+console.log(arr[0]); // => app
 ```
 - Prevent code that can throw an exception from causing the program to crash.
+    - if you wrap the code in a `try` block, followed by a `catch` block, instead of actually resulting in an error, the code will just give up on what's in the `try` block once it runs into an issue, and go straight to the `catch` block.
+    - a `finally` block can also be included, that would run no matter what
+```javascript
+try {
+    [...]
+} catch (e) {
+    [...]
+}
+```
+
 
 ## Intermediate Functions Lesson Learning Objectives
 
@@ -201,18 +211,126 @@ let myFunction = function(parameter) {
 }
 ```
 - Utilize `Array#push`, `#pop`, `#shift`, `#unshift` to mutate an array
-    - Array#push adds an element (passed as an argument)
-        - `[8, 2, 9, 7].push(4) => [4, 2, 9, 7, 4]`
-    -
+    - to remember shift/unshift vs pop/push, think about how when you use shift, all the indices of the items change—they shift down by one, because one item as been removed. "popping" an item off the end of the list won't shift the indices.
+    - Array#push adds an element at the end (passed as an argument)
+        - `[8, 2, 9, 7].push(4) => [8, 2, 9, 7, 4]`
+        - the return value is the new length of the array
+    - Array#pop removes the last element of the array (takes no arguments)
+        - `[8, 2, 9, 7].pop() => [8, 2, 9]`
+        - return value is the removed item
+    - Array#unshift adds an element at the beginning (passed as an argument)
+        - `[8, 2, 9, 7].unshift(4) => [4, 8, 2, 9, 7]`
+        - the return value is the new length of the array
+    - Array#shift removes the first element
+        - `[8, 2, 9, 7].shift() => [2, 9, 7]`
+        - return value is the removed item
+
 - List the arguments that can be used with Array#splice
     - starting index (inclusive)
     - number of elements to remove (can be `0`)
     - each subsequent argument is an element that will be inserted into the array at the starting index
 - Write a function that sums up elements of an array, given an array of numbers as an argument
-- Utilize Array#forEach, #map, #filter, #reduce in a function
+```javascript
+// using for loop
+function sumArray(array) {
+  let sum = 0;
+  for (let i = 0; i < array.length; i ++) {
+  	sum += array[i];
+  }
+  return sum;
+}
+
+// using Array#reduce
+let sumWithReduce = function(nums) {
+  return nums.reduce(function(sum, elem) {
+    return sum + elem;
+  }, 0)
+}
+```
+- Utilize `Array#forEach`, `#map`, `#filter`, `#reduce` in a function
+    - each one of these takes a function as a parameter, and uses that function to iterate over an array
+    - `Array#forEach` returns `undefined`
+        - like a special `for` loop, but for each item in an array (instead for each value of some index)
+        - it will always iterate forwards through every item in the array, so if you need to stop early or go backwards (or some other more complicated pattern), it would make more sense to use a regular `for` loop
+        - no return value
+    - `Array#map` returns an `Array`
+        - map is a way to transform each element of an array
+        - returns a new array the same length
+    - `Array#filter` returns an `Array`
+        - filter selects a subset of the items in an array. the items themselves that are kept won't be altered
+        - the function within the filter operation should return a boolean value, an answer to the question, "should this element be in the filtered array?"
+        - returns a new array that is shorter or equal in length to the original
+    - `Array#reduce` returns a single output value
+        - reduce uses an accumulator value that gets updated for each item in an array
+        - if you're looking for a single answer to a question (e.g. "what's the sum of all these items?", "what's the maximum number in the array?", "what's the longest string in the array?", etc)
+        - returns a single output value
 - Define a function that takes in an array of numbers and returns a new array containing only the primes
+```javascript
+let choosePrimes = function(nums) {
+  return nums.filter(function(elem) {
+    return isPrime(elem);
+  })
+}
+
+// use a helper function that returns a boolean value
+let isPrime = function(num) {
+  let maxFactor = Math.floor(Math.sqrt(num));
+  for (let i = 2; i <= maxFactor; i ++) {
+    if (num % i === 0) {
+      return false;
+    }
+  }
+  return true;
+}
+
+```
 - Define a function that takes in a 2D array of numbers and returns the total sum of all elements in the array
+
+```javascript
+// using for loops
+let sum2D = function(arr) {
+    let sum = 0;
+    for (let i = 0; i < arr.length; i ++) {
+        for (let j = 0; j < arr[i].length; j ++) {
+            sum += arr[i][j];
+        }
+    }
+    return sum;
+}
+
+// using forEach
+let sum2D = function(arr) {
+    let sum = 0;
+    arr.forEach(function(elems) {
+        elems.forEach(function(elem) {
+            sum += elem;
+        })
+    })
+    return sum;
+}
+
+// using reduce
+let sum2D = function(arr) {
+    return arr.reduce(function(acc, elems) {
+        return elems.reduce(function(sum, elem) {
+            return sum + elem;
+        }, acc)
+    }, 0)
+}
+```
 - Define a function that takes in an array of elements and returns a 2d array where the subarrays represent unique pairs of elements
+
+```javascript
+let pairs = function(arr) {
+    let pairsArr = [];
+    for (let i = 0; i < arr.length; i ++) {
+        for (let j = i +1; j < arr.length; j ++) {
+            pairsArr.push([arr[i], arr[j]]);
+        }
+    }
+    return pairsArr;
+}
+```
 
 - Define a function that takes in an array of numbers as an argument and returns the smallest value in the array; if the array is empty return null
 ```javascript
