@@ -132,9 +132,14 @@ Below is a complete list of the terminal learning objectives for this lesson. Wh
       - swap driver and navigator every 15 minutes
    - follow-up
       - recap accomplishments, what's left to do, leave notes about where you left off
+   - when remote:
+      - only code editor and your vid program open
+      - vscode liveshare??? tell me more
+
 - Describe the importance of pair programming competency while interviewing for jobs.
    - you may be expected to pair program/collaborate during job interviews
    - also improves communication about programming while doing it
+
 
 
 ## Callbacks Lesson Learning Objectives
@@ -227,6 +232,10 @@ let myEvery = function(array, callback) {
       - each function has a private mutable state that cannot be accessed externally
       - if you call the same function more than once, you are not totally starting with a blank slate necessarily?
       - closures can allow you to pass down arguments to helper functions without explicitly passing them to that helper function
+      - if a variable exists in the scope of what could have been accessed by a function (e.g. global scope, outer function, etc), does that variable wind up in the closure even if it never got accessed? yes—but in separate scopes. each scope has a pointer to the next s
+      - if you change the value of a variable (e.g. i++) you will change the value of that variable in the scope that it was declared in
+      - question: does the scope exist as part of the function object? (maybe the context takes care of this)
+
 
 ```javascript
 // what the hell
@@ -275,5 +284,13 @@ console.log(counter3()); //=>
 // lmao
 ```
 - Define a method that references `this` on an object literal
+   - when we use `this` in a method it refers to the object that the method is invoked on
+      - it will let you access other pieces of information from within that object, or even other methods
+      - method style invocation -  `object.method(args)` (e.g. built in examples like `Array#push`, or `String#toUpperCase`)
 - Utilize the built in `Function#bind` on a callback to maintain the context of this
 - Given a code snippet, identify what `this` refers to
+   - important to recognize the difference between scope and context
+      - scope works like a dictionary that has all the variables that are available within a given block, plus a pointer back the next outer scope (which itself has pointers to new scopes until you reach the global scope. so you can think about a whole given block's scope as a kind of linked list of dictionaries) (also, this is not to say that scope is actually implemented in this way, that is just the schema that i can use to understand it)
+      - context refers to the value of the `this` keyword
+   - the keyword `this` exists in every function and it evaluates to the object that is currently invoking that function
+   - so the context is fairly straightforward when we talk about methods being called on specific objects
