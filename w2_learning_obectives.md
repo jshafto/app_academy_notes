@@ -34,6 +34,8 @@
 - Write an object literal with a variable key using interpolation
    - not clear what is meant by "interpolation"?
 - Use the `obj[key] !== undefined` pattern to check if a given variable that contains a key exists in an object
+   - can also use `"key" in object` syntax (returns boolean)
+   - keys should be unique strings
 - Utilize Object.keys and Object.values in a function
 - Iterate through an object using a `for in` loop
 ```javascript
@@ -80,6 +82,12 @@ let {name: myName, appearance: myAppearance} = obj;
 
 console.log(myName); // "Wilfred"
 console.log(myAppearance); // ["short", "mustache"]
+
+// in a function call
+let sayHello = function({name}) {
+   console.log("Hello, " + name); // "Hello Wilfred"
+}
+
 ```
 - Write a function that accepts a array as an argument and returns an object representing the count of each character in the array
 ```javascript
@@ -190,6 +198,13 @@ let myEvery = function(array, callback) {
    - `var` - outdated, may or may not be reassigned, scoped to function
    - variables always evaluate to value it contains regardless of how it was declared
 - Explain the difference between `const`, `let`, and `var` declarations
+   - `var` is function scoped—so if you declare it anywhere in a function, the declaration (but not assignement) is "hoisted"
+      - so it will exist in memory as "undefined" which seems bad and unpredictable
+      - `var` will also allow you to redeclare a variable, while let will raise a syntax error. you shouldn't be able to do that!
+      - `const` won't let you reassign a variable, but if it points to a mutable object, you will still be able to change the value by mutating the object
+      - block-scoped variables allow new variables with the same name in new scopes
+      - block-scoped still performs hoisting of all variables within the block, but it doesn't initialize to the value of `undefined` like `var` does, so it throws a specific reference error if you try to access the value before it has been declared
+      - if you do not use `var` or `let` or `const` when initializing, it will be declared as global—THIS IS BAD
 - Predict the evaluation of code that utilizes function scope, block scope, lexical scope, and scope chaining
    - scope of a program means the set of variables that are available for use within the program
    - global scope is represented by the `window` object in the browser and the `global` object in Node.js
@@ -205,6 +220,60 @@ let myEvery = function(array, callback) {
 - Define an arrow function
 - Given an arrow function, deduce the value of `this` without executing the code
 - Implement a closure and explain how the closure effects scope
+   - a closure is " the combination of a function and the lexical environment within which that function was declared"
+      - alternatively, "when an inner function uses or changes variables in an outer function"
+   - closures have access to any variables within their own scope + scope of outer functions + global scope — the set of all these available variables is "lexical environemnt"
+   - closure keeps reference to all variables **even if the outer function has return**
+      - each function has a private mutable state that cannot be accessed externally
+      - if you call the same function more than once, you are not totally starting with a blank slate necessarily?
+      - closures can allow you to pass down arguments to helper functions without explicitly passing them to that helper function
+
+```javascript
+// what the hell
+// i need to think about this
+function createCounter() {
+   // in this function i am making a function that
+   // starts a new counter at 0
+   // but when you use this function to create that new counter,
+   // each new counter you create will have the same, like
+   // internal state everytime it's accessed
+   // you can't access that state from outside of the function
+   let count = 0;
+   return function() {
+      count ++;
+      return count;
+   }
+}
+
+let counter = createCounter();
+console.log(counter()); //=> 1
+console.log(counter()); //=> 2
+// so counter variable is a closure, in that
+// it contains the inner count value that was
+// initialized by the outer createCounter() function
+// count has been captured or closed over
+
+// this state is private, so if i run createCounter again
+// i get a totally separate count that doesn't interact
+// with the previous one and each of the new functions
+// will have their own internal state based on the
+// initial declaration in the now-closed outer function
+
+let counter2 = createCounter();
+console.log(counter2()); // => 1
+
+// okay but what if i set one function equal to the other?
+// does it get the old one's internal state/closure?
+
+let counter3 = counter2;
+console.log(counter3()); //=>
+// so yeah i think this fundamentally speaks to the
+// i dunno - mutability of the functions?
+// functions are a reference? maybe this is connected?
+// when you pass a function around you are passing
+// around the whole closure
+// lmao
+```
 - Define a method that references `this` on an object literal
 - Utilize the built in `Function#bind` on a callback to maintain the context of this
-- Given a code snippet, identify what this refers to
+- Given a code snippet, identify what `this` refers to
