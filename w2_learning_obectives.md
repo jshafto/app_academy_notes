@@ -185,8 +185,23 @@ let myEvery = function(array, callback) {
 ## Scope Lesson Learning Objectives
 
 - Identify the difference between `const`, `let`, and `var` declarations
+   - `const` - cannot reassign variable, scoped to block
+   - `let` - can reassign variable, scoped to block
+   - `var` - outdated, may or may not be reassigned, scoped to function
+   - variables always evaluate to value it contains regardless of how it was declared
 - Explain the difference between `const`, `let`, and `var` declarations
 - Predict the evaluation of code that utilizes function scope, block scope, lexical scope, and scope chaining
+   - scope of a program means the set of variables that are available for use within the program
+   - global scope is represented by the `window` object in the browser and the `global` object in Node.js
+      - global variables are available everywhere, and so increase the risk of name collisions
+   - local scope is the set of variables available for use within the function
+      - when we enter a function, we enter a new scope
+      - includes functions arguments, local variables declared inside function, and any variables that were already declared when the function is defined (hmm about that last one)
+   - for blocks (denoted by curly braces `{}`, as in conditionals or `for` loops), variables can be block scoped
+   - inner scope does not have access to variables in the outer scope
+      - scope chaining—if a given cariable is not found in immediate scope, javascript will search all accessible outer scopes until variable is found
+      - so an inner scope can access outer scope variables
+      - but an outer scope can never access inner scope variables
 - Define an arrow function
 - Given an arrow function, deduce the value of `this` without executing the code
 - Implement a closure and explain how the closure effects scope
