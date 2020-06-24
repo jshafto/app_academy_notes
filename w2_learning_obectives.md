@@ -32,7 +32,11 @@
       - allows variables as keys
       - strings that start with numbers can be use as keys
 - Write an object literal with a variable key using interpolation
-   - not clear what is meant by "interpolation"?
+   - put it in brackets to access the value of the variable, rather than just make the value that string
+```javascript
+let a = "a";
+let obj = {a: "letter_a", [a]: "letter b"}
+```
 - Use the `obj[key] !== undefined` pattern to check if a given variable that contains a key exists in an object
    - can also use `"key" in object` syntax (returns boolean)
    - keys should be unique strings
@@ -164,7 +168,7 @@ let greaterCB = function(val, callback1, callback2) {
 let myMap = function(array, callback) {
    let newArr = [];
    for (let i = 0; i < array.length; i ++) {
-      mapped = callback(array[i]);
+      mapped = callback(array[i], i, array);
       newArr.push(mapped);
    }
    return newArr;
@@ -176,7 +180,7 @@ let myFilter = function(array, callback) {
    let filtered = [];
    for (let i = 0; i < array.length; i ++) {
       if (callback(array[i])) {
-         filtered.push(array[i]);
+         filtered.push(array[i], i, array);
       }
    }
  }
@@ -185,11 +189,21 @@ let myFilter = function(array, callback) {
 ```javascript
 let myEvery = function(array, callback) {
    for (let i = 0; i < array.length; i ++) {
+      if (!callback(array[i], i, array)) {
+         return false
+      }
+   }
+   return true;
+}
+// with arrow function syntax
+let myEvery = (array, callback) => {
+   for (let i =0; i < array.length; i ++) {
       if (!callback(array[i])) {
          return false
       }
    }
    return true;
+}
 }
 ```
 
@@ -223,7 +237,29 @@ let myEvery = function(array, callback) {
       - so an inner scope can access outer scope variables
       - but an outer scope can never access inner scope variables
 - Define an arrow function
+```javascript
+let arrowFunction = (param1, param2) => {
+   let sum = param1 + param2;
+   return sum;
+}
+
+// with 1 param you can remove parens around parameters
+let arrowFunction = param => {
+   param ++;
+   return param;
+}
+
+// with 1 liner, you can use implied return
+let arrowFunction = param => {
+   param ++;
+}
+
+// you don't have to assign to variable, can be anonymous
+param => param++;
+```
 - Given an arrow function, deduce the value of `this` without executing the code
+   - arrow functions are automatically bound to the context they were declared in
+   - unlike regular function with use the context they are invoked in (unless they have been bound using `Function#bind`)
 - Implement a closure and explain how the closure effects scope
    - a closure is " the combination of a function and the lexical environment within which that function was declared"
       - alternatively, "when an inner function uses or changes variables in an outer function"
@@ -288,9 +324,68 @@ console.log(counter3()); //=>
       - it will let you access other pieces of information from within that object, or even other methods
       - method style invocation -  `object.method(args)` (e.g. built in examples like `Array#push`, or `String#toUpperCase`)
 - Utilize the built in `Function#bind` on a callback to maintain the context of this
+   - when we call bind on a function, we get an exotic function back—so the context will always be the same for that new function
+```javascript
+let cat = {
+  purr: function () {
+    console.log("meow");
+  },
+  purrMore: function () {
+    this.purr();
+  },
+};
+
+let sayMeow = cat.purrMore;
+console.log(sayMeow()); // TypeError: this.purr is not a function
+
+// we can now use the built in Function.bind to ensure our context, our `this`,
+// is the cat object
+let boundCat = sayMeow.bind(cat);
+
+// we still *need* to invoke the function
+boundCat(); // prints "meow"
+```
+   - bind can also work with arguments, so you can have a version of a function with particular arguments and a particular context. the first arg will be the context aka the `this` you want it to use. the next arguments will be the functions arguments that you are binding
+      - if you just want to bind it to those arguments in particular, you can use `null` as the first argument (would you be able to rebind it if needed? could it still accept a `this  ` if you bound it that way??)
 - Given a code snippet, identify what `this` refers to
    - important to recognize the difference between scope and context
       - scope works like a dictionary that has all the variables that are available within a given block, plus a pointer back the next outer scope (which itself has pointers to new scopes until you reach the global scope. so you can think about a whole given block's scope as a kind of linked list of dictionaries) (also, this is not to say that scope is actually implemented in this way, that is just the schema that i can use to understand it)
       - context refers to the value of the `this` keyword
    - the keyword `this` exists in every function and it evaluates to the object that is currently invoking that function
    - so the context is fairly straightforward when we talk about methods being called on specific objects
+   - you could, however, call an object's method on something other than that object, and then this would refer to the context where/how it was called, e.g.
+```javascript
+let dog = {
+   name: "Bowser",
+   changeName: function () {
+      this.name = "Layla";
+  },
+};
+
+// note this is **not invoked** - we are assigning the function itself
+let change = dog.changeName;
+console.log(change()); // undefined
+
+// our dog still has the same name
+console.log(dog); // { name: 'Bowser', changeName: [Function: changeName] }
+
+// instead of changing the dog we changed the global name!!!
+console.log(this); // Object [global] {etc, etc, etc,  name: 'Layla'}
+```
+   - CALLING SOMETHING IN THE WRONG CONTEXT CAN MESS YOU UP!
+      - could throw an error if it expects this to have some other method or whatever that doesn't exist
+      - you could also overwrite values or assign values to exist in a space where they should not exist
+   - if you call a function as a callback, it will set `this` to be the outer function itself, even if the function you were calling is a method that was called on a particular object
+```javascript
+let cat = {
+  purr: function () {
+    console.log("meow");
+  },
+  purrMore: function () {
+    this.purr();
+  },
+};
+
+global.setTimeout(cat.purrMore, 5000); // 5 seconds later: TypeError: this.purr is not a function
+```
+   - we can use strict mode with `"use strict";` this will prevent you from accessing the global object with `this` in functions, so if you try to call `this` in the global context and change a value, you will get a type error, and the things you try to access will be undefined
