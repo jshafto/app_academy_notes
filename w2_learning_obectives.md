@@ -70,18 +70,34 @@ let longer =[...arr1, "d", "e"];
 let array = [35,9];
 let [firstEl, secondEl] = array;
 console.log(firstEl); // => 35
-console.log(secondEl); // 9
+console.log(secondEl); // => 9
+
+// can also destructure using ... syntax
+let array = [35,9,14];
+let [head, ...tail] = array;
+console.log(head); // => 35
+console.log(tail); // => [9, 14]
 ```
 - Destructure an object to reference specific values
+   - if you want to use variable names that don't match the keys,
    - rule of thumb—only destructure values from objects that are two levels deep
 ```javascript
 // with variable names that match keys
-let obj = {name: "Wilfred", appearance: ["short", "mustache"]}
+let obj = {
+   name: "Wilfred",
+   appearance: ["short", "mustache"],
+   favorites: {
+   color: "mauve",
+      food: "spaghetti squash",
+      number: "3"
+   }
+}
+
 let { name, appearance } = obj;
 console.log(name); // "Wilfred"
 console.log(appearance); // ["short", "mustache"]
 
-// with new variable names
+// with new variable names (aliasing)
 let {name: myName, appearance: myAppearance} = obj;
 
 console.log(myName); // "Wilfred"
@@ -89,8 +105,12 @@ console.log(myAppearance); // ["short", "mustache"]
 
 // in a function call
 let sayHello = function({name}) {
-   console.log("Hello, " + name); // "Hello Wilfred"
+console.log("Hello, " + name); // "Hello Wilfred"
 }
+
+// nested objects + aliasing
+let { favorites: {color, food: vegetable} } = obj;
+console.log(color, vegetable); //=> mauve spaghetti squash
 
 ```
 - Write a function that accepts a array as an argument and returns an object representing the count of each character in the array
@@ -162,6 +182,11 @@ let greaterCB = function(val, callback1, callback2) {
    }
    return callback2(val);
 }
+
+// shorter version
+let greaterCB = function(val, callback1, callback2) {
+   return Math.max(callback1(val), callback2(val));
+}
 ```
 - Write a function, myMap, that takes in an array and a callback as arguments. The function should mimic the behavior of `Array#map`.
 ```javascript
@@ -173,6 +198,16 @@ let myMap = function(array, callback) {
    }
    return newArr;
 }
+console.log( myMap([16,25,36], Math.sqrt)); // => [4, 5, 6];
+
+let myMapArrow = (array, callback) => {
+   let newArr = [];
+   array.forEach( (ele, ind, array) => {
+      newArr.push(callback(ele, ind, array));
+   })
+   return newArr;
+}
+console.log(myMapArrow([16,25,36], Math.sqrt)); // => [4, 5, 6];
 ```
 - Write a function, myFilter, that takes in an array and a callback as arguments. The function should mimic the behavior of `Array#filter`.
 ```javascript
@@ -214,16 +249,17 @@ let myEvery = (array, callback) => {
 - Identify the difference between `const`, `let`, and `var` declarations
    - `const` - cannot reassign variable, scoped to block
    - `let` - can reassign variable, scoped to block
-   - `var` - outdated, may or may not be reassigned, scoped to function
+   - `var` - outdated, may or may not be reassigned, scoped to function. can be not just reassigned, but also redeclared!
    - variables always evaluate to value it contains regardless of how it was declared
 - Explain the difference between `const`, `let`, and `var` declarations
    - `var` is function scoped—so if you declare it anywhere in a function, the declaration (but not assignement) is "hoisted"
       - so it will exist in memory as "undefined" which seems bad and unpredictable
-      - `var` will also allow you to redeclare a variable, while let will raise a syntax error. you shouldn't be able to do that!
+      - `var` will also allow you to redeclare a variable, while `let` will raise a syntax error. you shouldn't be able to do that!
       - `const` won't let you reassign a variable, but if it points to a mutable object, you will still be able to change the value by mutating the object
       - block-scoped variables allow new variables with the same name in new scopes
       - block-scoped still performs hoisting of all variables within the block, but it doesn't initialize to the value of `undefined` like `var` does, so it throws a specific reference error if you try to access the value before it has been declared
       - if you do not use `var` or `let` or `const` when initializing, it will be declared as global—THIS IS BAD
+   - if you don't declare at all, that means it exists in the global scope (so then it would be accessible by all outer scopes, so bad). however, there's no hoisting, so it doesn't exist in the scope until after the line is run
 - Predict the evaluation of code that utilizes function scope, block scope, lexical scope, and scope chaining
    - scope of a program means the set of variables that are available for use within the program
    - global scope is represented by the `window` object in the browser and the `global` object in Node.js
@@ -249,28 +285,111 @@ let arrowFunction = param => {
    return param;
 }
 
-// with 1 liner, you can use implied return
+// if your return statement is one line, you can use implied return
 let arrowFunction = param => {
    param ++;
 }
 
+// and you don't need a separate line
+let arrowFunction = param => param ++;
+
 // you don't have to assign to variable, can be anonymous
-param => param++;
+// if you never need to use it again
+param => param ++;
 ```
 - Given an arrow function, deduce the value of `this` without executing the code
    - arrow functions are automatically bound to the context they were declared in
-   - unlike regular function with use the context they are invoked in (unless they have been bound using `Function#bind`)
+   - unlike regular function which use the context they are invoked in (unless they have been bound using `Function#bind`)
+   - if you implement an arrow function as a method in an object the context it will be bound to is NOT the object itself, but the global context
+   - so you can't use an arrow function to define a method directly
+```javascript
+let obj = {
+    name: "my object",
+    unboundFunc: function () {
+        return this.name;
+        // this function will be able to be called on different objects
+    },
+
+    boundToGlobal: () => {
+        return this.name;
+        // this function, no matter how you call it, will be called
+        // on the global object, and it cannot be rebound
+        // this is because it was defined using arrow syntax
+    },
+
+    makeFuncBoundToObj: function () {
+        return () => {
+            return this.name;
+        }
+        // this function will return a new function that will be bound
+        // to the context where makeFuncBoundToObj was called
+        // because the arrow syntax is nested inside one of this
+        // function's methods, it cannot be rebound
+    },
+
+    makeUnboundFunc: function () {
+        return function () {
+            return this.name;
+        }
+        //this function will return a function that will still be unbound
+    },
+
+    immediatelyInvokedFunc: function () {
+        return this.name;
+    }() // this property will be set to the return value of this anonymous function
+}
+
+let otherObj = {
+    name: "my other object"
+}
+
+
+// call unboundFunc on obj, we get "my object"
+console.log(obj.unboundFunc()); // => "my object"
+// assign unboundFunc to a variable and call it
+let newFunc = obj.unboundFunc;
+// this newFunc will default to being called on global object
+console.log(newFunc()); // =>  undefined
+// but you could bind it directly to a different object if you wanted
+console.log(newFunc.bind(otherObj)()); // => "my other object"
+
+// meanwhile, obj.boundToGlobal will only ever be called on global object
+console.log(obj.boundToGlobal()); //=> undefined
+let newBoundFunc = obj.boundToGlobal;
+console.log(newBoundFunc()); // => undefined
+// even if you try to directly bind to another object, it won't work!
+console.log(newBoundFunc.bind(otherObj)()); // => undefined
+
+// let's make a new function that will always be bound to the context
+// where we call our function maker
+let boundFunc = obj.makeFuncBoundToObj();// note that we're invoking, not just assigning
+console.log(boundFunc()); // => "my object"
+// we can't rebind this function
+console.log(boundFunc.bind(otherObj)()) // "my object"
+
+// but if I call makeFuncBoundToObj on another context
+// the new bound function is stuck with that other context
+let boundToOther = obj.makeFuncBoundToObj.bind(otherObj)();
+console.log(boundToOther()); // => "my other object"
+console.log(boundToOther.bind(otherObj)()) // "my other object"
+
+// the return value of my immediately invoked function
+// shows that the context inside of the object is the
+// global object, not the object itself
+// context only changes inside a function that is called
+// on an object
+console.log(obj.immediatelyInvokedFunc);
+
+```
 - Implement a closure and explain how the closure effects scope
-   - a closure is " the combination of a function and the lexical environment within which that function was declared"
+   - a closure is "the combination of a function and the lexical environment within which that function was declared"
       - alternatively, "when an inner function uses or changes variables in an outer function"
    - closures have access to any variables within their own scope + scope of outer functions + global scope — the set of all these available variables is "lexical environemnt"
-   - closure keeps reference to all variables **even if the outer function has return**
+   - closure keeps reference to all variables **even if the outer function has returned**
       - each function has a private mutable state that cannot be accessed externally
-      - if you call the same function more than once, you are not totally starting with a blank slate necessarily?
-      - closures can allow you to pass down arguments to helper functions without explicitly passing them to that helper function
-      - if a variable exists in the scope of what could have been accessed by a function (e.g. global scope, outer function, etc), does that variable wind up in the closure even if it never got accessed? yes—but in separate scopes. each scope has a pointer to the next s
+      - the inner function will maintain a reference to the scope in which it was declared. so it has access to variables that were initialized in any outer scope—even if that scope
+      - if a variable exists in the scope of what could have been accessed by a function (e.g. global scope, outer function, etc), does that variable wind up in the closure even if it never got accessed?
       - if you change the value of a variable (e.g. i++) you will change the value of that variable in the scope that it was declared in
-      - question: does the scope exist as part of the function object? (maybe the context takes care of this)
 
 
 ```javascript
@@ -323,6 +442,9 @@ console.log(counter3()); //=>
    - when we use `this` in a method it refers to the object that the method is invoked on
       - it will let you access other pieces of information from within that object, or even other methods
       - method style invocation -  `object.method(args)` (e.g. built in examples like `Array#push`, or `String#toUpperCase`)
+   - context is set every time we invoke a function
+   - function style invocation sets the context to the global object no matter what
+   - being inside an object does not make the context that object! you still have to use method-style invocation
 - Utilize the built in `Function#bind` on a callback to maintain the context of this
    - when we call bind on a function, we get an exotic function back—so the context will always be the same for that new function
 ```javascript
