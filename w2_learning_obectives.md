@@ -38,9 +38,10 @@ let a = "a";
 let obj = {a: "letter_a", [a]: "letter b"}
 ```
 - Use the `obj[key] !== undefined` pattern to check if a given variable that contains a key exists in an object
-   - can also use `"key" in object` syntax (returns boolean)
-   - keys should be unique strings
+   - can also use `(key in object)` syntax interchangeably (returns a boolean)
 - Utilize Object.keys and Object.values in a function
+   - `Object.keys(obj)` returns an array of all the keys in `obj`
+   - `Object.values(obj)` returns an array of the values in `obj`
 - Iterate through an object using a `for in` loop
 ```javascript
 let printValues = function(obj) {
@@ -51,6 +52,8 @@ let printValues = function(obj) {
 }
 ```
 - Define a function that utilizes `...rest` syntax to accept an arbitrary number of arguments
+   - `...rest` syntax will store all additional arguments in an array
+   - array will be empty if there are no additional arguments
 ```javascript
 let myFunction = function(str, ...strs) {
    console.log("The first string is " + str);
@@ -60,10 +63,12 @@ let myFunction = function(str, ...strs) {
    })
 }
 ```
-- Use ...spread syntax for Object literals and Array literals
+- Use `...spread` syntax for Object literals and Array literals
 ```javascript
 let arr1 = ["a","b","c"];
-let longer =[...arr1, "d", "e"];
+let longer = [...arr1, "d", "e"]; // ["a", "b", "c", "d", "e"]
+// without spread syntax, this would give you a nested array
+let withoutRest = [arr1, "d", "e"] // [["a", "b", "c"], "d", "e"]
 ```
 - Destructure an array to reference specific elements
 ```javascript
@@ -79,20 +84,20 @@ console.log(head); // => 35
 console.log(tail); // => [9, 14]
 ```
 - Destructure an object to reference specific values
-   - if you want to use variable names that don't match the keys,
+   - if you want to use variable names that don't match the keys, you can use aliasing
+      - `let { oldkeyname: newkeyname } = object`
    - rule of thumb—only destructure values from objects that are two levels deep
 ```javascript
-// with variable names that match keys
 let obj = {
    name: "Wilfred",
    appearance: ["short", "mustache"],
    favorites: {
-   color: "mauve",
+      color: "mauve",
       food: "spaghetti squash",
-      number: "3"
+      number: 3
    }
 }
-
+// with variable names that match keys
 let { name, appearance } = obj;
 console.log(name); // "Wilfred"
 console.log(appearance); // ["short", "mustache"]
@@ -111,19 +116,19 @@ console.log("Hello, " + name); // "Hello Wilfred"
 // nested objects + aliasing
 let { favorites: {color, food: vegetable} } = obj;
 console.log(color, vegetable); //=> mauve spaghetti squash
-
 ```
 - Write a function that accepts a array as an argument and returns an object representing the count of each character in the array
 ```javascript
-let countedChars = function(arr) {
-   let obj = {};
-   arr.forEach(function(elem, ind) {
-      // wasn't sure exacely what they meant by "count"
-      // so i'm using index instead
-      obj[elem] = ind;
-   })
-   return obj;
+//
+let elementCounts = function(array) {
+    let obj = {};
+    array.forEach( function(el) {
+        if (el in obj) obj[el] += 1;
+        else obj[el] = 1;
+    })
+    return obj;
 }
+ console.log(elementCounts(["e", "f", "g", "f"])); // => Object {e: 1, f: 2, g: 1}
 ```
 
 
@@ -157,12 +162,10 @@ Below is a complete list of the terminal learning objectives for this lesson. Wh
    - follow-up
       - recap accomplishments, what's left to do, leave notes about where you left off
    - when remote:
-      - only code editor and your vid program open
-      - vscode liveshare??? tell me more
-
+      - only shared code editor and your vid program open
 - Describe the importance of pair programming competency while interviewing for jobs.
    - you may be expected to pair program/collaborate during job interviews
-   - also improves communication about programming while doing it
+   - also improves your ability to communicate about programming while doing it
 
 
 
@@ -174,6 +177,7 @@ Below is a complete list of the terminal learning objectives for this lesson. Wh
    - supports same basic operations as other types (strings, bools, numbers)
    - higher-order functions take functions as arguments or return functions as values
 - Given a code snippet containing an anonymous callback, a named callback, and multiple `console.log`s, predict what will be printed
+   - what is this referring to?
 - Write a function that takes in a value and two callbacks. The function should return the result of the callback that is greater.
 ```javascript
 let greaterCB = function(val, callback1, callback2) {
@@ -187,6 +191,8 @@ let greaterCB = function(val, callback1, callback2) {
 let greaterCB = function(val, callback1, callback2) {
    return Math.max(callback1(val), callback2(val));
 }
+// even shorter, cause why not
+let greaterCB = (val, cb1, cb2) => Math.max(cb1(val), cb2(val));
 ```
 - Write a function, myMap, that takes in an array and a callback as arguments. The function should mimic the behavior of `Array#map`.
 ```javascript
@@ -252,9 +258,9 @@ let myEvery = (array, callback) => {
    - `var` - outdated, may or may not be reassigned, scoped to function. can be not just reassigned, but also redeclared!
    - variables always evaluate to value it contains regardless of how it was declared
 - Explain the difference between `const`, `let`, and `var` declarations
-   - `var` is function scoped—so if you declare it anywhere in a function, the declaration (but not assignement) is "hoisted"
-      - so it will exist in memory as "undefined" which seems bad and unpredictable
-      - `var` will also allow you to redeclare a variable, while `let` will raise a syntax error. you shouldn't be able to do that!
+   - `var` is function scoped—so if you declare it anywhere in a function, the declaration (but not assignment) is "hoisted"
+      - so it will exist in memory as "undefined" which is bad and unpredictable
+      - `var` will also allow you to redeclare a variable, while `let` or `const` will raise a syntax error. you shouldn't be able to do that!
       - `const` won't let you reassign a variable, but if it points to a mutable object, you will still be able to change the value by mutating the object
       - block-scoped variables allow new variables with the same name in new scopes
       - block-scoped still performs hoisting of all variables within the block, but it doesn't initialize to the value of `undefined` like `var` does, so it throws a specific reference error if you try to access the value before it has been declared
@@ -269,7 +275,7 @@ let myEvery = (array, callback) => {
       - includes functions arguments, local variables declared inside function, and any variables that were already declared when the function is defined (hmm about that last one)
    - for blocks (denoted by curly braces `{}`, as in conditionals or `for` loops), variables can be block scoped
    - inner scope does not have access to variables in the outer scope
-      - scope chaining—if a given cariable is not found in immediate scope, javascript will search all accessible outer scopes until variable is found
+      - scope chaining—if a given variable is not found in immediate scope, javascript will search all accessible outer scopes until variable is found
       - so an inner scope can access outer scope variables
       - but an outer scope can never access inner scope variables
 - Define an arrow function
@@ -373,7 +379,7 @@ let boundToOther = obj.makeFuncBoundToObj.bind(otherObj)();
 console.log(boundToOther()); // => "my other object"
 console.log(boundToOther.bind(otherObj)()) // "my other object"
 
-// the return value of my immediately invoked function
+// the return value of the immediately invoked function
 // shows that the context inside of the object is the
 // global object, not the object itself
 // context only changes inside a function that is called
@@ -393,15 +399,16 @@ console.log(obj.immediatelyInvokedFunc);
 
 
 ```javascript
-// what the hell
-// i need to think about this
 function createCounter() {
-   // in this function i am making a function that
-   // starts a new counter at 0
-   // but when you use this function to create that new counter,
-   // each new counter you create will have the same, like
-   // internal state everytime it's accessed
-   // you can't access that state from outside of the function
+   // this function starts a counter at 0, then returns a
+   // new function that can access and change that counter
+   //
+   // each new counter you create will have a single internal
+   // state, that can be changed only by calling the function.
+   // you can't access that state from outside of the function,
+   // even though the count variable in question is initialized
+   // by the outer function, and it remains accessible to the
+   // inner function after the outer function returns.
    let count = 0;
    return function() {
       count ++;
@@ -412,6 +419,17 @@ function createCounter() {
 let counter = createCounter();
 console.log(counter()); //=> 1
 console.log(counter()); //=> 2
+// so the closure here comes into play because
+// an inner function is accessing and changing
+// a variable from an outer function
+
+// the closure is the combination of the counter
+// function and the all the variables that existed
+// in the scope that it was declared in. because
+// inner blocks/functions have access to outer
+// scopes, that includes the scope of the outer
+// function.
+
 // so counter variable is a closure, in that
 // it contains the inner count value that was
 // initialized by the outer createCounter() function
@@ -426,17 +444,10 @@ console.log(counter()); //=> 2
 let counter2 = createCounter();
 console.log(counter2()); // => 1
 
-// okay but what if i set one function equal to the other?
-// does it get the old one's internal state/closure?
-
+// if i set a new function equal to my existing counter
+// the internal state is shared with the new function
 let counter3 = counter2;
-console.log(counter3()); //=>
-// so yeah i think this fundamentally speaks to the
-// i dunno - mutability of the functions?
-// functions are a reference? maybe this is connected?
-// when you pass a function around you are passing
-// around the whole closure
-// lmao
+console.log(counter3());
 ```
 - Define a method that references `this` on an object literal
    - when we use `this` in a method it refers to the object that the method is invoked on
@@ -460,15 +471,14 @@ let cat = {
 let sayMeow = cat.purrMore;
 console.log(sayMeow()); // TypeError: this.purr is not a function
 
-// we can now use the built in Function.bind to ensure our context, our `this`,
+// we can use the built in Function.bind to ensure our context, our `this`,
 // is the cat object
 let boundCat = sayMeow.bind(cat);
 
-// we still *need* to invoke the function
 boundCat(); // prints "meow"
 ```
-   - bind can also work with arguments, so you can have a version of a function with particular arguments and a particular context. the first arg will be the context aka the `this` you want it to use. the next arguments will be the functions arguments that you are binding
-      - if you just want to bind it to those arguments in particular, you can use `null` as the first argument (would you be able to rebind it if needed? could it still accept a `this  ` if you bound it that way??)
+   - `bind` can also work with arguments, so you can have a version of a function with particular arguments and a particular context. the first arg will be the context aka the `this` you want it to use. the next arguments will be the functions arguments that you are binding
+      - if you just want to bind it to those arguments in particular, you can use `null` as the first argument, so the context won't be bound, just the arguments
 - Given a code snippet, identify what `this` refers to
    - important to recognize the difference between scope and context
       - scope works like a dictionary that has all the variables that are available within a given block, plus a pointer back the next outer scope (which itself has pointers to new scopes until you reach the global scope. so you can think about a whole given block's scope as a kind of linked list of dictionaries) (also, this is not to say that scope is actually implemented in this way, that is just the schema that i can use to understand it)
