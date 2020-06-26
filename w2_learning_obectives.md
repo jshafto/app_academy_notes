@@ -34,7 +34,7 @@
 - Write an object literal with a variable key using interpolation
    - put it in brackets to access the value of the variable, rather than just make the value that string
 ```javascript
-let a = "a";
+let a = "b";
 let obj = {a: "letter_a", [a]: "letter b"}
 ```
 - Use the `obj[key] !== undefined` pattern to check if a given variable that contains a key exists in an object
@@ -260,12 +260,12 @@ let myEvery = (array, callback) => {
 - Explain the difference between `const`, `let`, and `var` declarations
    - `var` is function scoped—so if you declare it anywhere in a function, the declaration (but not assignment) is "hoisted"
       - so it will exist in memory as "undefined" which is bad and unpredictable
-      - `var` will also allow you to redeclare a variable, while `let` or `const` will raise a syntax error. you shouldn't be able to do that!
-      - `const` won't let you reassign a variable, but if it points to a mutable object, you will still be able to change the value by mutating the object
-      - block-scoped variables allow new variables with the same name in new scopes
-      - block-scoped still performs hoisting of all variables within the block, but it doesn't initialize to the value of `undefined` like `var` does, so it throws a specific reference error if you try to access the value before it has been declared
-      - if you do not use `var` or `let` or `const` when initializing, it will be declared as global—THIS IS BAD
-   - if you don't declare at all, that means it exists in the global scope (so then it would be accessible by all outer scopes, so bad). however, there's no hoisting, so it doesn't exist in the scope until after the line is run
+   - `var` will also allow you to redeclare a variable, while `let` or `const` will raise a syntax error. you shouldn't be able to do that!
+   - `const` won't let you reassign a variable, but if it points to a mutable object, you will still be able to change the value by mutating the object
+   - block-scoped variables allow new variables with the same name in new scopes
+   - block-scoped still performs hoisting of all variables within the block, but it doesn't initialize to the value of `undefined` like `var` does, so it throws a specific reference error if you try to access the value before it has been declared
+   - if you do not use `var` or `let` or `const` when initializing, it will be declared as global—THIS IS BAD
+      - if you assign a value without a declaration, it exists in the global scope (so then it would be accessible by all outer scopes, so bad). however, there's no hoisting, so it doesn't exist in the scope until after the line is run
 - Predict the evaluation of code that utilizes function scope, block scope, lexical scope, and scope chaining
    - scope of a program means the set of variables that are available for use within the program
    - global scope is represented by the `window` object in the browser and the `global` object in Node.js
