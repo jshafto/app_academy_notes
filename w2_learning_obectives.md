@@ -245,7 +245,6 @@ let myEvery = (array, callback) => {
    }
    return true;
 }
-}
 ```
 
 
@@ -256,7 +255,7 @@ let myEvery = (array, callback) => {
    - `const` - cannot reassign variable, scoped to block
    - `let` - can reassign variable, scoped to block
    - `var` - outdated, may or may not be reassigned, scoped to function. can be not just reassigned, but also redeclared!
-   - variables always evaluate to value it contains regardless of how it was declared
+   - a variable will always evaluate to the value it contains regardless of how it was declared
 - Explain the difference between `const`, `let`, and `var` declarations
    - `var` is function scoped—so if you declare it anywhere in a function, the declaration (but not assignment) is "hoisted"
       - so it will exist in memory as "undefined" which is bad and unpredictable
@@ -327,8 +326,8 @@ let obj = {
         return () => {
             return this.name;
         }
-        // this function will return a new function that will be bound
-        // to the context where makeFuncBoundToObj was called
+        // this function will return a function that will be bound
+        // to the object where we call the outer method
         // because the arrow syntax is nested inside one of this
         // function's methods, it cannot be rebound
     },
@@ -342,7 +341,18 @@ let obj = {
 
     immediatelyInvokedFunc: function () {
         return this.name;
-    }() // this property will be set to the return value of this anonymous function
+    }(), // this property will be set to the return value of this anonymous function,
+    // which is invoked during the object definition;
+    // basically, it's a way to check the context inside of an object, at this moment
+
+    innerObj: {
+        name: "inner object",
+        innerArrowFunc: () =>  {
+            return this.name;
+        } // the context inside a nested object is not the parent, it's still
+        // the global object. entering an object definition doesn't change the context
+    },
+
 }
 
 let otherObj = {
@@ -351,40 +361,46 @@ let otherObj = {
 
 
 // call unboundFunc on obj, we get "my object"
-console.log(obj.unboundFunc()); // => "my object"
+console.log("unboundFunc: ", obj.unboundFunc()); // => "my object"
 // assign unboundFunc to a variable and call it
 let newFunc = obj.unboundFunc;
 // this newFunc will default to being called on global object
-console.log(newFunc()); // =>  undefined
+console.log("newFunc: ",newFunc()); // =>  undefined
 // but you could bind it directly to a different object if you wanted
-console.log(newFunc.bind(otherObj)()); // => "my other object"
+console.log("newFunc: ", newFunc.bind(otherObj)()); // "my other object"
 
 // meanwhile, obj.boundToGlobal will only ever be called on global object
-console.log(obj.boundToGlobal()); //=> undefined
+console.log("boundToGlobal: ", obj.boundToGlobal()); //=> undefined
 let newBoundFunc = obj.boundToGlobal;
-console.log(newBoundFunc()); // => undefined
+console.log("newBoundFunc: ", newBoundFunc()); // => undefined
 // even if you try to directly bind to another object, it won't work!
-console.log(newBoundFunc.bind(otherObj)()); // => undefined
+console.log("newBoundFunc: ", newBoundFunc.bind(otherObj)()); // => undefined
 
 // let's make a new function that will always be bound to the context
 // where we call our function maker
 let boundFunc = obj.makeFuncBoundToObj();// note that we're invoking, not just assigning
-console.log(boundFunc()); // => "my object"
+console.log("boundFunc: ", boundFunc()); // => "my object"
 // we can't rebind this function
-console.log(boundFunc.bind(otherObj)()) // "my object"
+console.log("boundFunc: ", boundFunc.bind(otherObj)()) // =>"my object"
 
 // but if I call makeFuncBoundToObj on another context
 // the new bound function is stuck with that other context
 let boundToOther = obj.makeFuncBoundToObj.bind(otherObj)();
-console.log(boundToOther()); // => "my other object"
-console.log(boundToOther.bind(otherObj)()) // "my other object"
+console.log("boundToOther: ", boundToOther()); // => "my other object"
+console.log("boundToOther: ", boundToOther.bind(obj)()) // "my other object"
 
-// the return value of the immediately invoked function
+// the return value of my immediately invoked function
 // shows that the context inside of the object is the
 // global object, not the object itself
 // context only changes inside a function that is called
 // on an object
-console.log(obj.immediatelyInvokedFunc);
+console.log("immediatelyInvokedFunc: ", obj.immediatelyInvokedFunc); // => undefined
+
+// even though we're inside a nested object, the context is
+// still the same as it was outside the outer object
+// in this case, the global object
+console.log("innerArrowFunc: ", obj.innerObj.innerArrowFunc()); // => undefined
+
 
 ```
 - Implement a closure and explain how the closure effects scope
