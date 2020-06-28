@@ -286,21 +286,16 @@ let arrowFunction = (param1, param2) => {
 
 // with 1 param you can remove parens around parameters
 let arrowFunction = param => {
-   param ++;
+   param += 1;
    return param;
 }
 
 // if your return statement is one line, you can use implied return
-let arrowFunction = param => {
-   param ++;
-}
-
-// and you don't need a separate line
-let arrowFunction = param => param ++;
+let arrowFunction = param => param + 1;
 
 // you don't have to assign to variable, can be anonymous
 // if you never need to use it again
-param => param ++;
+param => param + 1;
 ```
 - Given an arrow function, deduce the value of `this` without executing the code
    - arrow functions are automatically bound to the context they were declared in
