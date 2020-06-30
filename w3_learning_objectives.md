@@ -143,20 +143,42 @@ fs.readFile("dictionary.txt", "utf8", (err, data) = {
 git push -u origin add-my-new-file
 ```
 - Given a git merge conflict, resolve it
+    - occurs when changes on two branches are incompatible, so if you made a change to a particular line, but that line in the branch that you're merging to has also been changed
+    - within the conflicting file, you have the choice to accept incoming changes, then add it to the staging area and commit it
 - Match the three types of git reset with appropriate descriptions of the operation.
+    - `--soft` flag is least dangerous—moves intermediate changes to staging area
+    - by default, `--mixed` reset will occur: puts changes into the wokring directory rather than the staging area
+    - `--hard` reset will completely obliterate intermediate commits
 - Use Git reset to rollback local-only commits.
+    - `git reset` moves the `HEAD` like checkout, but it destroys intermediate commits
+
 - Identify what the git rebase command does
+    - rewrites history
+    - `git rebase` changes the current branch's base branch... usually, you would want a regular merge, but could be useful if you started your branch from the wrong commit
+    - _never change history on a shared branch_
 - Use git diff to compare a local 'staging' branch and 'master' branch.
     - `git diff` by default compares working directory to last commit
     -  `--staged` compares stages area to last commit
+    - can also compare two named branches, or just based on commit hash
+    - type `q` to exit
 - Use git checkout to check out a specific commit by commit id
+    - `git checkout <commit-hash>`
+    - points `HEAD` at a different commit, doesn't actually change history
+    - `git checkout <your-branch-name>` will take you back again
+
 
 
 ## Command Line Interface Basics Lesson Learning Objectives
 - Given a folder structure diagram, a list of 'cd (path)' commands and target files, match the paths to the target files.
 - Create, rename, and move folders using unix command line tools.
+    - `mkdir` will make a directory `-p` if you need it to create all parent directories in between
+    - `mv` will move a directory— the `-r` flag will allow you to recursively move its contents
+        - `mv` will also rename files and directories—just move it to where it already was, but with the correct name
 - Use grep and | to count matches of a pattern in a sample text file and save result to another file.
-- Find what -c, -r, and -b flags do in grep by reading the manual.
+- Find what `-c`, `-r`, and `-b` flags do in grep by reading the manual.
+    - `-c` - suppress normal output; instead print a count of matching lines for each input file.
+    - `-r` - reads all files recursively under each directory
+    - `-b` - prints the 0-based byte offset within the input files before each line of output
 - Identify the difference in two different files using diff.
 - Open and close nano with and without saving a file.
 - Use ‘curl’ to download a file.
