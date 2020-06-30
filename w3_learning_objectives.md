@@ -175,6 +175,7 @@ git push -u origin add-my-new-file
     - `mv` will move a directory— the `-r` flag will allow you to recursively move its contents
         - `mv` will also rename files and directories—just move it to where it already was, but with the correct name
 - Use grep and | to count matches of a pattern in a sample text file and save result to another file.
+    - `grep` does text search
 - Find what `-c`, `-r`, and `-b` flags do in grep by reading the manual.
     - `-c` - suppress normal output; instead print a count of matching lines for each input file.
     - `-r` - reads all files recursively under each directory
