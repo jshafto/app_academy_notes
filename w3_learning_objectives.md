@@ -103,16 +103,52 @@ fs.readFile("dictionary.txt", "utf8", (err, data) = {
 
 ## Git Lesson Learning Objectives
 - Use Git to initialize a repo
+    - `git init` will initialize a new git repo in your current directory
+    - `git add .` adds all files to the staging area
+    - make `.gitignore` file for the stuff you don't want to track
 - Explain the difference between Git and GitHub
+    - git  is a distributed version control system
+        - primary remote is known as origin
+    - GitHub is the best-known and most widely used place for hosting remote Git repositories
 - Given 'adding to staging', 'committing', and 'pushing to remote', match attributes that apply to each.
+    - `git add` lets you stage changes for commit (move them from the working directory to the staging area)
+    - `git commit` updates your local repository with the staged changes (moves them from the staging area to the commit history)
+        - run `git commit -m <message>` with a message (in quotes) to skip opening a file for your commit message
+    - `git push` (e.g. `git push origin master`) lets you push your changes to the remote repository
 - Use Git to clone an existing repo from GitHub
+    - `git clone <url>`
+        - creates a new folder in your current directory named after the repo you're cloning
 - Use Git to push a local commit to a remote branch
+    - e.g. `git push origin master`
 - Use git to make a branch, push it to github, and make a pull request on GitHub to merge it to master
+    - a branch is a separate timeline in Git, reserved for its own changes
+        - very important when you are working on a team
+    - `git  branch <name-of-your-branch>` creates named reference to your current commit, and lets you add commits without affecting the master branch
+    - `git checkout <name-of-branch>` if you want to open an existing branch
+    - the `-u` flag is short for --set-upstream, and it tells git you want your local branch to follow a remote branch.... you need it the first time you push a new branch
+    - `git pull` will update all your local branches with code from their remote counterparts. fetches from remote, then merges with your local branches
+    - a pull request is a GitHub, not a git features
+        - github makes a comparison page of your code against the base branch that can be reviewed by your team, and then merged by the repo maintainer
+```
+> git branch my-changes
+> git add new-file.js
+> git commit -m "Add new file"
+> git checkout master
+> git merge my-changes
+
+
+> git branch add-my-new-file
+> git add my-new-file.js
+> git commit -m "Add new file"
+git push -u origin add-my-new-file
+```
 - Given a git merge conflict, resolve it
 - Match the three types of git reset with appropriate descriptions of the operation.
 - Use Git reset to rollback local-only commits.
 - Identify what the git rebase command does
 - Use git diff to compare a local 'staging' branch and 'master' branch.
+    - `git diff` by default compares working directory to last commit
+    -  `--staged` compares stages area to last commit
 - Use git checkout to check out a specific commit by commit id
 
 
@@ -135,6 +171,7 @@ fs.readFile("dictionary.txt", "utf8", (err, data) = {
 ## JS Trivia Lesson Learning Objectives
 - Given a code snippet of a unassigned variable, predict its value.
 - Explain why functions are “First Class Objects” in JavaScript
+    - functions are first class citizens in JavaScript because they have all the same privileges as other primitive types. they can be passed as arguments to a function, or returned from one, and they can be stored in variables
 - Define what IIFEs are and explain their use case
 (Whiteboarding) Implement a closure
 - Identify JavaScript’s falsey values
