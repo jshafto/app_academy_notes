@@ -98,7 +98,6 @@ fs.readFile("dictionary.txt", "utf8", (err, data) = {
         rl.close();
     })
 })
-
 ```
 
 ## Git Lesson Learning Objectives
@@ -180,17 +179,32 @@ git push -u origin add-my-new-file
     - `-c` - suppress normal output; instead print a count of matching lines for each input file.
     - `-r` - reads all files recursively under each directory
     - `-b` - prints the 0-based byte offset within the input files before each line of output
-- Identify the difference in two different files using diff.
+- Identify the difference in two different files using `diff`.
 - Open and close nano with and without saving a file.
+    - `ctrl + o` to write out, `ctrl + x` to exit
 - Use ‘curl’ to download a file.
+    -
 - Read the variables of $PATH.
+    -
 - Explain the difference between .bash_profile and .bashrc.
-- Create a new alias by editing the .bash_profile.
+    - `.bash_profile` is the login shell—used when bash is started with the `-l` or `--login` flag. if there's no `.bash_profile` bash with run the `.profile` instead
+        - sometimes, the `.bash_profile` with itself run the `.bashrc` file, too
+    - with Zsh, there is one `.zshrc` file that is started when you start Zsh for both login shells and non-login shells
+        - on macOS prior to Catalina, Terminal runs bash as a `login shell` on every terminal window
+        - after Catalina, uses Zsh so it runs both `.zlogin` and `.zshrc` every time
+- Create a new alias by editing the `.bash_profile`.
 - Given a list of common scenarios, identify when it is appropriate and safe to use sudo, and when it is a dangerous mistake.
-- Write a shell script that greets a user by their $USER name using echo.
-- Use chmod to make a shell script executable.
-
-
+    - don't use sudo with rm under almost any circumstances
+    -
+- Write a shell script that greets a user by their `$USER` name using `echo`.
+    - script must have interpreter directive, commented description, script body
+        - interpreter directive is the first line
+            - `#!/bin/bash`
+            - `#!/usr/bin/env bash` will make a bash script runnable on zshell? i think??
+            - in zshell `#!/usr/local/bin/zsh`
+- Use `chmod` to make a shell script executable.
+    - to give exectution privileges to all, `chmod +x scriptfile`
+        - more generally `chmod [ugo]+[rwx] filename.txt` will add specified permission to the specified identity, and `chmod [ugo]-[rwx] filename.txt` will remove that permission
 ## JS Trivia Lesson Learning Objectives
 - Given a code snippet of a unassigned variable, predict its value.
 - Explain why functions are “First Class Objects” in JavaScript
