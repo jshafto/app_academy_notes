@@ -2,10 +2,18 @@
 ## Asynchronous JS Lesson Learning Objectives
 
 - Identify JavaScript as a language that utilizes an event loop model
+    - in an event loop model, items wait on the message queue until the call stack is empty.
+    - once the call stack is empty, the front item gets put onto the call stack.
+    - any functions that are called inside the function that is being executed on the call stack will be pushed onto the top of the call stack. once they return, they are popped off
+    - while the call stack is busy, incoming events or function calls will be placed at the back of the message queue, so the messages will be executed in the order they were received
+        - this is distinct from functions that are called inside of a function that is being executed on the call stack. those are already part of an ongoing process, so they do not have to wait in line
+    - there is only one message queue, so no matter how deep we are in the call stack, the queued events will go to the end of the queue
 - Identify JavaScript as a single threaded language
+    - "thread" refers to the thread of execution or sequence of commands
     - only one event can be handled at a time
     - the use of a single call-stack leads to a single thread of execution
-    - an event can only be handled once the call stack is empty
+        - stack means that new items get pushed on top, and the item underneath can't be accessed until it has been popped off
+    - a new event can only be handled once the call stack is empty
 - Describe the difference between asynchronous and synchronous code
     - synchronous: guarantees code will be executed in inherent order
     - asynchronous: there is no guarantee what order the code will be executed in
@@ -24,14 +32,13 @@
 setTimeout(() => console.log("time's up!"), 1000);
 // any additional arguments will be passed to the function
 // when it is called
-setTimeout((num) => console.log("the number is" + num), 1000, 6);
+setTimeout((num) => console.log("the number is " + num), 1000, 6);
 
-// this will NOT work because you will invoke the function
-// right at that moment
-setTimeout(
+// passing arguments to the function directly will NOT work // because you will invoke the function right at that moment
+setTimeout(((num) => console.log("the number is " + num))(6), 1000);
 ```
 - Given the function `function asyncy(cb) { setTimeout(cb, 1000); console.log("async") }` and the function `function callback() { console.log("callback"); }`, predict the output of `asyncy(callback);`
-    -
+    - `async`
 - Use setInterval to have a function execute 10 times with a 1 second period. After the 10th cycle, clear the interval.
     - calls function continuously after at least the interval has passed
     - if you don't clear your interval, it will never stop
@@ -47,11 +54,19 @@ let foo = () => {
 let myIntervalFunc = setInterval(foo, 100);
 ```
 - Write a program that accepts user input using Node’s readline module
-    - chain callbacks in a nested fashion to get them to execute in sequential
-        -
+    - chain callbacks in a nested fashion to get them to execute in sequential order
     - user input will always be a string—convert to number if you want to explicitly transform into a number
-
-
+```javascript
+const fs = require("fs");
+const readline = require("readline");
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+})
+question.rl("Here is my prompt!", (answer) =>{
+    console.log(answer);
+})
+```
 ## Node.js Lesson Learning Objectives
 - Define NodeJS as distinct from browser based JavaScript runtimes.
     - javascript is a specification
@@ -175,19 +190,22 @@ git push -u origin add-my-new-file
         - `mv` will also rename files and directories—just move it to where it already was, but with the correct name
 - Use grep and | to count matches of a pattern in a sample text file and save result to another file.
     - `grep` does text search
+    - `man grep | grep -C2 word` would let you search the grep man page for instance of the word "word" and show lines above and below
 - Find what `-c`, `-r`, and `-b` flags do in grep by reading the manual.
     - `-c` - suppress normal output; instead print a count of matching lines for each input file.
     - `-r` - reads all files recursively under each directory
     - `-b` - prints the 0-based byte offset within the input files before each line of output
 - Identify the difference in two different files using `diff`.
+    - `diff filename1 filename2`
 - Open and close nano with and without saving a file.
     - `ctrl + o` to write out, `ctrl + x` to exit
 - Use ‘curl’ to download a file.
-    -
+    - `curl <url>` prints to command line
+    - `curl -o <filename> <url>`
 - Read the variables of $PATH.
     -
 - Explain the difference between .bash_profile and .bashrc.
-    - `.bash_profile` is the login shell—used when bash is started with the `-l` or `--login` flag. if there's no `.bash_profile` bash with run the `.profile` instead
+    - `.bash_profile` is executed in the login shell—used when bash is started with the `-l` or `--login` flag. if there's no `.bash_profile` bash with run the `.profile` instead
         - sometimes, the `.bash_profile` with itself run the `.bashrc` file, too
     - with Zsh, there is one `.zshrc` file that is started when you start Zsh for both login shells and non-login shells
         - on macOS prior to Catalina, Terminal runs bash as a `login shell` on every terminal window
@@ -195,24 +213,46 @@ git push -u origin add-my-new-file
 - Create a new alias by editing the `.bash_profile`.
 - Given a list of common scenarios, identify when it is appropriate and safe to use sudo, and when it is a dangerous mistake.
     - don't use sudo with rm under almost any circumstances
-    -
+    - ls, cp are generally safe
+    - adding execution permission to a single file
+        - but be careful when changing privileges
 - Write a shell script that greets a user by their `$USER` name using `echo`.
-    - script must have interpreter directive, commented description, script body
+    - script must have interpreter directive, commented description, script body. extension typically .sh
         - interpreter directive is the first line
             - `#!/bin/bash`
-            - `#!/usr/bin/env bash` will make a bash script runnable on zshell? i think??
-            - in zshell `#!/usr/local/bin/zsh`
+            - `#!/usr/bin/env bash` behaves the same, but is cross-system compatible
+            - if program is in in zshell `#!/usr/bin/env zsh`
+        - commented description uses `#` on each line
+            - not necessary, just advisable
+        - script body is just commands just as they would be entered into the command line
 - Use `chmod` to make a shell script executable.
     - to give exectution privileges to all, `chmod +x scriptfile`
-        - more generally `chmod [ugo]+[rwx] filename.txt` will add specified permission to the specified identity, and `chmod [ugo]-[rwx] filename.txt` will remove that permission
+        - more generally `chmod [ugo]+[rwx] <filename>` will add specified permission to the specified identity, and `chmod [ugo]-[rwx] filename.txt` will remove that permission
+
 ## JS Trivia Lesson Learning Objectives
 - Given a code snippet of a unassigned variable, predict its value.
 - Explain why functions are “First Class Objects” in JavaScript
     - functions are first class citizens in JavaScript because they have all the same privileges as other primitive types. they can be passed as arguments to a function, or returned from one, and they can be stored in variables
 - Define what IIFEs are and explain their use case
-(Whiteboarding) Implement a closure
+- (Whiteboarding) Implement a closure
 - Identify JavaScript’s falsey values
 - Interpolate a string using back-ticks
+    - use backticks around the string, and then you can put variables directly into the string with `${variableName}`
+    - `` `hello ${name}!` ``
 - Identify that object keys are strings or symbols
+    - strings are not unique, so keys could accidentally be overwritten
+    - recently symbols were added so that objects could be safer
+    - every time `Symbol()`
+    - `Object.keys()` doesn't work on symbols cause they are too new
+    - use `Object.getOwnPropertySymbols(obj)` instead
 - A primitive type is data that is not an object and therefore cannot have methods(functions that belong to them).
 - Given a code snippet where variable and function hoisting occurs, identify the return value of a function.
+    -
+
+    - all the variable declarations will be "hoisted" to the top of the scope
+    - for `var`, that means that the variable will be `undefined` until it is actually assigned.
+    - for `const` and `let`
+    - function
+
+variable assignment will trump function definition, but variable declaration will not!
+all functions declared function style are hoisted (to what scope?)
