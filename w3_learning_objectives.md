@@ -27,7 +27,7 @@
     - `setTimeout` operates asynchronously in that the time is not exact, it's only a minimum, so you can _never_ guarantee its timing
     - all the synchronous code will execute before the async code executes
     - if you don't include a time, it's the same as passing in a 0. it still executes asynchronously, so it gets added to the queue immediately and then it gets executes once the call stack is empty
-    -if you store the output of `setTimeout`, you get this object back, and you can use that to cancel the timeout with `clearTimeout`
+    - if you store the output of `setTimeout`, you get this object back, and you can use that to cancel the timeout with `clearTimeout`
 ```javascript
 setTimeout(() => console.log("time's up!"), 1000);
 // any additional arguments will be passed to the function
@@ -45,6 +45,7 @@ setTimeout(Math.sqrt(6), 1000);
 - Use `setInterval` to have a function execute 10 times with a 1 second period. After the 10th cycle, clear the interval.
     - calls function continuously after at least the interval has passed
     - if you don't clear your interval, it will never stop
+    - clearing the interval must take place inside the function, otherwise the interval will be synchronously cleared before the asynchronous call takes place
 ```javascript
 let count = 1;
 let foo = () => {
@@ -58,7 +59,7 @@ let myIntervalFunc = setInterval(foo, 100);
 ```
 - Write a program that accepts user input using Node’s readline module
     - chain callbacks in a nested fashion to get them to execute in sequential order
-    - user input will always be a string—convert to number if you want to explicitly transform into a number
+    - user input will always be a string. use `Number` function to convert strings to numbers when necessary
 ```javascript
 const fs = require("fs");
 const readline = require("readline");
@@ -139,15 +140,15 @@ fs.readFile("dictionary.txt", "utf8", (err, data) => {
     - `git clone <url>`
         - creates a new folder in your current directory named after the repo you're cloning
 - Use Git to push a local commit to a remote branch
-    - e.g. `git push origin master`
+    - `git push <remote> <branch>`
 - Use git to make a branch, push it to github, and make a pull request on GitHub to merge it to master
     - a branch is a separate timeline in Git, reserved for its own changes
         - very important when you are working on a team
     - `git  branch <name-of-your-branch>` creates named reference to your current commit, and lets you add commits without affecting the master branch
     - `git checkout <name-of-branch>` if you want to open an existing branch
-    - the `-u` flag is short for --set-upstream, and it tells git you want your local branch to follow a remote branch.... you need it the first time you push a new branch
-    - `git pull` will update all your local branches with code from their remote counterparts. fetches from remote, then merges with your local branches
-    - a pull request is a GitHub, not a git features
+    - the `-u` flag is short for `--set-upstream`, and it tells git you want your local branch to follow a remote branch. you need it the first time you push a new branch
+    - `git pull` will update all your local branches with code from their remote counterparts. first fetches from remote, then merges with your local branches
+    - a pull request is a feature of GitHub, not of git itself
         - github makes a comparison page of your code against the base branch that can be reviewed by your team, and then merged by the repo maintainer
 ```
 > git branch my-changes
@@ -167,7 +168,7 @@ git push -u origin add-my-new-file
     - open the conflicting file in an appropriate editor and you will have the choice to accept incoming changes or not, and then you can add it to the staging area and commit the resolved merge
 - Match the three types of git reset with appropriate descriptions of the operation.
     - `--soft` flag is least dangerous—moves intermediate changes to staging area
-    - by default, `--mixed` reset will occur: puts changes into the wokring directory rather than the staging area
+    - by default, `--mixed` reset will occur: puts changes into the working directory rather than the staging area
     - `--hard` reset will completely obliterate intermediate commits
 - Use Git reset to rollback local-only commits.
     - `git reset` moves the `HEAD` like checkout, but it destroys intermediate commits
@@ -179,7 +180,7 @@ git push -u origin add-my-new-file
     - _never change history on a shared branch_
 - Use git diff to compare a local 'staging' branch and 'master' branch.
     - `git diff` by default compares working directory to last commit
-    -  `--staged` compares stages area to last commit
+    -  `--staged` compares staged area to last commit
     - can also compare two named branches, or just based on commit hash
     - type `q` to exit
 - Use git checkout to check out a specific commit by commit id
@@ -194,9 +195,12 @@ git push -u origin add-my-new-file
     - `mv` will move a directory— the `-r` flag will allow you to recursively move its contents
         - `mv` will also rename files and directories—just move it to where it already was, but with the correct name
 - Use grep and | to count matches of a pattern in a sample text file and save result to another file.
-    - `grep` does text search
-    - `man grep | grep -C2 word` would let you search the grep man page for instance of the word "word" and show lines above and below
-    - (this one needs an answer)
+    - `echo |  grep -c how spellchecked.txt > filename.txt`
+        - `echo` prints what is passed to it
+        - `> filename.txt` gives it a destination
+        - `grep <target-string> <file>` finds all the lines where that search term appears in the file
+        - `-c` flag makes a count of the lines instead of the lines themselves
+    - if you get stuck, `man grep | grep -C2 <target-string>` would let you search the grep man page itself, and print lines above and below where the search term appears for clarity
 - Find what `-c`, `-r`, and `-b` flags do in grep by reading the manual.
     - `-c` - suppress normal output; instead print a count of matching lines for each input file.
     - `-r` - reads all files recursively under each directory
@@ -210,28 +214,34 @@ git push -u origin add-my-new-file
     - `curl -o <filename> <url>` saves to a file
 - Read the variables of $PATH.
     - not sure exactly what that means
-- Explain the difference between .bash_profile and .bashrc.
+    - `echo $PATH` is maybe what this is referring to?
+- Explain the difference between `.bash_profile` and `.bashrc`.
     - `.bash_profile` is executed in the login shell—used when bash is started with the `-l` or `--login` flag. if there's no `.bash_profile` bash with run the `.profile` instead
         - sometimes, the `.bash_profile` will itself run the `.bashrc` file, too
     - with Zsh, there is one `.zshrc` file that is started when you start Zsh for both login shells and non-login shells
-        - on macOS prior to Catalina, Terminal runs bash as a `login shell` on every terminal window
+        - on macOS prior to Catalina, Terminal runs bash as a login shell on every terminal window
         - after Catalina, uses Zsh so it runs both `.zlogin` and `.zshrc` every time
 - Create a new alias by editing the `.bash_profile`.
     - `alias rm='rm -i'`
-- Given a list of common scenarios, identify when it is appropriate and safe to use sudo, and when it is a dangerous mistake.
+- Given a list of common scenarios, identify when it is appropriate and safe to use `sudo`, and when it is a dangerous mistake.
     - generally speaking, if a command is destructive (getting rid of files or info, e.g. `rm`) or if it might allow access to private information (e.g. `chmod 777`) then it would be safer not to force the computer to carry it out
-    - `ls`, `cp` are generally safe
-    - adding execution permission to a single file is probably okay
-        - but be careful when changing privileges
+    - `ls`, `cp` are generally safe (non-destructive)
+    - adding execution permission to a single file is okay as long as you know exactly what the file is doing
 - Write a shell script that greets a user by their `$USER` name using `echo`.
     - script must have interpreter directive, commented description, script body. extension typically .sh
         - interpreter directive is the first line
             - `#!/bin/bash`
             - `#!/usr/bin/env bash` behaves the same, but is cross-system compatible
-            - if program is in in zshell `#!/usr/bin/env zsh`
+            - if program is written in in zshell `#!/usr/bin/env zsh`
         - commented description uses `#` on each line
             - not necessary, just advisable
         - script body is just commands just as they would be entered into the command line
+```shell
+#!/bin/bash
+# This program greets a user by name
+
+echo Hello $USER
+```
 - Use `chmod` to make a shell script executable.
     - to give exectution privileges to all, `chmod +x scriptfile`
         - more generally `chmod [ugo]+[rwx] <filename>` will add specified permission to the specified identity, and `chmod [ugo]-[rwx] filename.txt` will remove that permission
@@ -243,7 +253,35 @@ git push -u origin add-my-new-file
 
 ## JS Trivia Lesson Learning Objectives
 - Given a code snippet of a unassigned variable, predict its value.
-    - probably add stuff here
+```javascript
+console.log(hello); // prints undefined
+var hello = "hi"
+
+console.log(nope); // ReferenceError
+let nope = "uh oh"
+
+console.log(noo); // ReferenceError
+const noo = "oops"
+
+console.log(yup()); // prints this is fine
+function yup () {
+    return "this is fine";
+};
+
+console.log(bad()); // TypeError
+var bad = function () {
+    return "too bad";
+}
+
+var sure;
+console.log(sure); // prints undefined
+
+let okay;
+console.log(okay); // prints undefined
+
+const oof; // SyntaxError
+console.log(oof);
+```
 - Explain why functions are “First Class Objects” in JavaScript
     - functions are first class citizens in JavaScript because they have all the same privileges as other primitive types. they can be passed as arguments to a function, or returned from one, and they can be stored in variables
 - Define what IIFEs are and explain their use case
@@ -277,9 +315,17 @@ dynamicDivider => divisor => dividend => dividend/divisor;
     - recently symbols were added so that objects could be safer
     - every time `Symbol()` runs, a unique key is generated.
     - optional description can go in the `()` but two symbols with the same description are not the same symbol—`Symbol('description') !== Symbol('description')`
-    - `Object.keys()` doesn't work on symbols cause they are too new
+    - `Object.keys()` doesn't work on symbols
     - use `Object.getOwnPropertySymbols(obj)` instead
+```javascript
+mySym = Symbol("sym")
+obj = {[mySym]: "symbol", myStr: "string"}
+console.log(Object.keys(obj)); // returns [ 'myStr' ]
+console.log(Object.getOwnPropertySymbols(obj)); // [ Symbol(sym) ]
+console.log(Reflect.ownKeys(obj)); // [ 'myStr', Symbol(sym) ]
+```
 - A primitive type is data that is not an object and therefore cannot have methods(functions that belong to them).
+    - okay cool.
 - Given a code snippet where variable and function hoisting occurs, identify the return value of a function.
     - all the variable declarations will be "hoisted" to the top of the scope
         - `var` declarations will be hoisted and initialized to `undefined` (before the actual declaration, variables can be used without throwing an error)
