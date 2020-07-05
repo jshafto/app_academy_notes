@@ -1,7 +1,13 @@
 Browser Basics Lesson Learning Objectives
 
 - Explain the difference between the BOM (browser object model) and the DOM(document object model).
+    - the `document` object is a web page, and the DOM represents the object hierarchy of the document
+    - the browser object model consists of a hierarchy of browser objects—one of which is the `document`
+        - the top level object in the BOM is the `window`
+        - `window.document` contains a reference to the document the window contains (can be shortened to `document`)
 - Given a diagram of all the different parts of the Browser identify each part. Use the Window API to change the innerHeight of a user's window.
+    - ![from: http://itwebtutorials.mga.edu/js/chp1/browser-object-model.aspx](https://github.com/jshafto/app_academy_notes/blob/master/bom-hierarchy?raw=true)
+
 - Identify the context of an anonymous functions running in the Browser (the window).
 - Given a JS file and an HTML file, use a script tag to import the JS file and execute the code therein when all the elements on the page load (using DOMContentLoaded)
 - Given a JS file and an HTML file, use a script tag to import the JS file and execute the code therein when the page loads
