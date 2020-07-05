@@ -6,7 +6,7 @@ Browser Basics Lesson Learning Objectives
         - the top level object in the BOM is the `window`
         - `window.document` contains a reference to the document the window contains (can be shortened to `document`)
 - Given a diagram of all the different parts of the Browser identify each part. Use the Window API to change the innerHeight of a user's window.
-    - ![from: http://itwebtutorials.mga.edu/js/chp1/browser-object-model.aspx](https://github.com/jshafto/app_academy_notes/blob/master/bom-hierarchy?raw=true)
+    - ![from: http://itwebtutorials.mga.edu/js/chp1/browser-object-model.aspx](https://raw.githubusercontent.com/jshafto/app_academy_notes/master/bom-hierarchy.jpg)
 
 - Identify the context of an anonymous functions running in the Browser (the window).
 - Given a JS file and an HTML file, use a script tag to import the JS file and execute the code therein when all the elements on the page load (using DOMContentLoaded)
