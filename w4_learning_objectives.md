@@ -6,10 +6,34 @@ Browser Basics Lesson Learning Objectives
         - the top level object in the BOM is the `window`
         - `window.document` contains a reference to the document the window contains (can be shortened to `document`)
 - Given a diagram of all the different parts of the Browser identify each part. Use the Window API to change the innerHeight of a user's window.
-    - ![from: http://itwebtutorials.mga.edu/js/chp1/browser-object-model.aspx](https://raw.githubusercontent.com/jshafto/app_academy_notes/master/bom-hierarchy.jpg)
+    ![from: http://itwebtutorials.mga.edu/js/chp1/browser-object-model.aspx](https://raw.githubusercontent.com/jshafto/app_academy_notes/master/bom-hierarchy.jpg)
+    ![from: http://itwebtutorials.mga.edu/js/chp1/browser-object-model.aspx](./bom-hierarchy.jpg)
+```javascript
+// Open a new window
+newWindow = window.open("", "", "width=100, height=100");
 
+// Resize the new window
+newWindow.resizeTo(500, 500);
+```
 - Identify the context of an anonymous functions running in the Browser (the window).
-- Given a JS file and an HTML file, use a script tag to import the JS file and execute the code therein when all the elements on the page load (using DOMContentLoaded)
+    - `window`
+- Given a JS file and an HTML file, use a script tag to import the JS file and execute the code therein when all the elements on the page load (using `DOMContentLoaded`)
+    - `DOMContentLoaded` ensures that script will run when the document has been loaded without waiting for stylesheets, images and subframes to load.
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="dom-ready-script.js"></script>
+  </head>
+  <body></body>
+  <html></html>
+</html>
+```
+```javascript
+window.addEventListener("DOMContentLoaded", event => {
+  console.log("This script loaded when the DOM was ready.");
+});
+```
 - Given a JS file and an HTML file, use a script tag to import the JS file and execute the code therein when the page loads
 - Identify three ways to prevent JS code from executing until an entire HTML page is loaded
 - Label a diagram on the Request/Response cycle.
