@@ -91,6 +91,7 @@ let divOfInterest = document.getElementById('catch-me-if-you-can');
 let cloudySpans = document.querySelectorAll('span.cloudy');
 ```
 - Given an HTML file with HTML, HEAD, TITLE, and BODY elements, create and reference a JS file that in which the JavaScript will create and attach to the BODY element an H1 element with the id "sleeping-giant" with the content "Jell-O, Burled!".
+  - create new elements with `document.createElement()` and `document.createTextNode`, and append them to existing DOM elements with `Element.appendChild()`
 ```javascript
 const addElement = () => {
   const myElement = document.createElement("h1"); // create new element
@@ -139,6 +140,7 @@ window.addEventListener("DOMContentLoaded", event => {
 });
 ```
 - Given an HTML file with a UL element with the id "your-best-friend" that has six non-empty LIs as its children, write JavaScript to write the content of each LI to the console.
+  - access children nodes with `NodeList.childNodes`
 ```javascript
 window.addEventListener("DOMContentLoaded", event => {
   const parent = document.getElementById("your-best-friend")l
@@ -149,6 +151,7 @@ window.addEventListener("DOMContentLoaded", event => {
 });
 ```
 - Given an HTML file with a UL element with the id "your-worst-enemy" that has no children, write JavaScript to construct a string that contains six LI tags each containing a random number and set the inner HTML property of ul#your-worst-enemy to that string.
+  - update DOM elements with `Element.innerHTML`
 ```javascript
 // generate a random number for each list item
 const getRandomInt = max => {
