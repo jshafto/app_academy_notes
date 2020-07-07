@@ -3,6 +3,7 @@
 
 - Explain the difference between the BOM (browser object model) and the DOM(document object model).
     - the `document` object is a web page, and the DOM represents the object hierarchy of the document
+      - html all gets rendered into an object with the tree structure, with nodes representing each html element
     - the browser object model consists of a hierarchy of browser objects—one of which is the `document`
         - the top level object in the BOM is the `window`
         - `window.document` contains a reference to the document the window contains (can be shortened to `document`)
@@ -47,7 +48,7 @@ window.addEventListener("DOMContentLoaded", event => {
 <html>
   <head>
     <script type="text/javascript" src="window-load-script.js"></script>
-    </head>
+  </head>
   <body></body>
   <html></html>
 </html>
