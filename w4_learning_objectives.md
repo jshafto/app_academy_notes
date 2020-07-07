@@ -81,14 +81,109 @@ window.onload = () => {
 ## Element Selection Lesson Learning Objectives
 
 - Given HTML that includes `<div id=”catch-me-if-you-can”>HI!</div>`, write a JavaScript statement that stores a reference to the `HTMLDivElement` with the `id` “catch-me-if-you-can” in a variable named “divOfInterest”.
+  - `getElementById` allows you to reference a single element by its `id`
+```javascript
+let divOfInterest = document.getElementById('catch-me-if-you-can');
+```
 - Given HTML that includes seven SPAN elements each with the class “cloudy”, write a JavaScript statement that stores a reference to a NodeList filled with references to the seven HTMLSpanElements in a variable named “cloudySpans”.
+  - `querySelectorAll` references all elements with the class name "cloudy" as a static [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList)
+```javascript
+let cloudySpans = document.querySelectorAll('span.cloudy');
+```
 - Given an HTML file with HTML, HEAD, TITLE, and BODY elements, create and reference a JS file that in which the JavaScript will create and attach to the BODY element an H1 element with the id "sleeping-giant" with the content "Jell-O, Burled!".
+```javascript
+const addElement = () => {
+  const myElement = document.createElement("h1"); // create new element
+  myElement.setAttribute("id", "sleeping-giant"); // set id
+  // create new text element
+  const myNewContent = document.createTextNode("Jello-Burled!");
+  // attach the text as a node to the new element
+  myElement.appendChild(myNewContent);
+  // attach the new element to the document
+  document.body.appendChild(myElement);
+}
+window.onload = addElement;
+```
 - Given an HTML file with HTML, HEAD, TITLE, SCRIPT, and BODY elements with the SCRIPT's SRC attribute referencing an empty JS file, write a script in the JS file to create a DIV element with the id "lickable-frog" and add it as the last child to the BODY element.
-- Given an HTML file with HTML, HEAD, TITLE, SCRIPT, and BODY elements with no SRC attribute on the SCRIPT element, write a script in the SCRIPT block to create a UL element with no id, create an LI element with the id "dreamy-eyes", add the LI as a child to the UL element, and add the UL element as the first child of the BODY element.
+```javascript
+const addElement = () => {
+  const myFrogElement = document.createElement("div");
+  myFrogElement.setAttribute("id", "lickable-frog");
+  document.body.appendChild(myFrogElement)
+}
+window.onload = addElement;
+```
+- Given an HTML file with HTML, HEAD, TITLE, SCRIPT, and BODY elements with no SRC attribute on the SCRIPT element, write a script in the SCRIPT block to create a UL element with no id, create an LI element with the id "dreamy-eyes", add the LI as a child to the UL element, and add the UL element as the first child of the BODY element
+```HTML
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript">
+      const addListElement = () => {
+        const myUL = document.createElement("ul");
+        const myLI = document.createElement("li");
+        myLI.setAttribute("id", "dreamy-eyes");
+        myUL.appendChild(myLI);
+        document.body.appendChild(myUL);
+      }
+      window.onload = addListElement;
+    </script>
+  </head>
+  <body></body>
+</html>
+```
 - Write JavaScript to add the CSS class "i-got-loaded" to the BODY element when the window fires the DOMContentLoaded event.
+```javascript
+window.addEventListener("DOMContentLoaded", event => {
+  document.body.className = "i-got-loaded";
+});
+```
 - Given an HTML file with a UL element with the id "your-best-friend" that has six non-empty LIs as its children, write JavaScript to write the content of each LI to the console.
+```javascript
+window.addEventListener("DOMContentLoaded", event => {
+  const parent = document.getElementById("your-best-friend")l
+  const childNodes = parent.childNodes;
+  for (let value of childNodes.values()) {
+    console.log(value);
+  }
+});
+```
 - Given an HTML file with a UL element with the id "your-worst-enemy" that has no children, write JavaScript to construct a string that contains six LI tags each containing a random number and set the inner HTML property of ul#your-worst-enemy to that string.
+```javascript
+// generate a random number for each list item
+const getRandomInt = max => {
+  return Math.floor(Math.random() * Math.floor(max));
+};
+
+// listen for DOM ready event
+window.addEventListener("DOMContentLoaded", event => {
+  // push 6 LI elements into an array and join
+  const liArr = [];
+  for (let i = 0; i < 6; i++) {
+    liArr.push("<li>" + getRandomInt(10) + "</li>");
+  }
+  const liString = liArr.join(" ");
+
+  // insert string into the DOM using innerHTML
+  const listElement = document.getElementById("your-worst-enemy");
+  listElement.innerHTML = liString;
+});
+```
 - Write JavaScript to update the title of the document to the current time at a reasonable interval such that it looks like a real clock.
+```javascript
+window.addEventListener("DOMContentLoaded", event => {
+  const title = document.getElementById("title");
+  const time = () => {
+    const date = new Date();
+    const seconds = date.getSeconds();
+    const minutes = date.getMinutes();
+    const hours = date.getHours();
+
+    title.innerHTML = hours + ":" + minutes + ":" + seconds;
+  };
+  setInterval(time, 1000);
+});
+```
 
 ## Event Handling Lesson Learning Objectives
 
