@@ -192,14 +192,237 @@ window.addEventListener("DOMContentLoaded", event => {
 ## Event Handling Lesson Learning Objectives
 
 - Given an HTML page that includes `<button id="increment-count">I have been clicked <span id="clicked-count">0</span> times</button>`, write JavaScript that increases the value of the content of span#clicked-count by 1 every time button#increment-count is clicked.
+  - you can add an eventListener for a click on a given `button`
+  - update clicks everytime the event occurs
+  - `button.onclick` can also be used but this overrides existing event listeners, so the  `addEventListener` method is preferred
+```javascript
+window.addEventListener("DOMContentLoaded", event => {
+  const button = document.getElementById("increment-count");
+  const count = document.getElementById("clicked-count");
+  let clicks = 0;
+  button.addEventListener("click", event => {
+    clicks += 1;
+    count.innerHTML = clicks;
+  });
+});
+```
 - Given an HTML page that includes `<input type="checkbox" id="on-off"><div id="now-you-see-me">`Now you see me`</div>`, write JavaScript that sets the display of div#now-you-see-me to "none" when input#on-off is checked and to "block" when input#on-off is not checked.
+  - one solution is to change the css style directly when the click event occurs
+  - another solution is to use `classList.remove()` and `classList.add()` in order to change which styles apply to the element when the event occurs
+    - this is more efficient when changing many properties at once so you don't have to change them all individually
+```javascript
+window.addEventListener("DOMContentLoaded", event => {
+  // store the elements we need in variables
+  const checkbox = document.getElementById("on-off");
+  const divShowHide = document.getElementById("now-you-see-me");
+  // add an event listener for the checkbox click
+  checkbox.addEventListener("click", event => {
+    // use the 'checked' attribute of checkbox inputs
+    // returns true if checked, false if unchecked
+    if (checkbox.checked) {
+      // if the box is checked, show the div
+      divShowHide.style.display = "block";
+      // else hide the div
+    } else {
+      divShowHide.style.display = "none";
+    }
+  });
+});
+```
 - Given an HTML file that includes `<input id="stopper" type="text" placeholder="Quick! Type STOP">`, write JavaScript that will change the background color of the page to cyan five seconds after a page loads unless the field input#stopper contains only the text "STOP".
+```javascript
+// script.js
+// run when the DOM is ready
+window.addEventListener("DOMContentLoaded", event => {
+  const stopCyanMadness = () => {
+    // get the value of the input field
+    const inputValue = document.getElementById("stopper").value;
+    // if value is anything other than 'STOP', change background color
+    if (inputValue !== "STOP") {
+      document.body.style.backgroundColor = "cyan";
+    }
+  };
+  setTimeout(stopCyanMadness, 5000);
+});
+```
 - Given an HTML page with that includes `<input type=”text” id=”fancypants”>`, write JavaScript that changes the background color of the textbox to #E8F5E9 when the caret is in the textbox and turns it back to its normal color when focus is elsewhere.
-- Given an HTML page that includes a form with two password fields, write JavaScript that subscribes to the forms submission event and cancels it if the values in the two password fields differ.
-- Given an HTML page that includes a div styled as a square with a red background, write JavaScript that allows a user to drag the square around the screen.
-- Given an HTML page that has 300 DIVs, create one click event subscription that will print the id of the element clicked on to the console.
-- Identify the definition of the bubbling principle.
+```javascript
+window.addEventListener("DOMContentLoaded", event => {
+  const input = document.getElementById("fancypants");
 
+  input.addEventListener("focus", event => {
+    event.target.style.backgroundColor = "#E8F5E9";
+  });
+  input.addEventListener("blur", event => {
+    event.target.style.backgroundColor = "initial";
+  });
+});
+```
+- Given an HTML page that includes a form with two password fields, write JavaScript that subscribes to the forms submission event and cancels it if the values in the two password fields differ.
+  - listen for "submit" event with `addEventListener`
+  - get the values from the forms with `getElementByID`
+  - if the passwords don't match, prevent form submission with `event.preventDefault()`
+```javascript
+// script.js
+window.addEventListener("DOMContentLoaded", event => {
+  // get the form element
+  const form = document.getElementById("signup-form");
+
+  const checkPasswordMatch = event => {
+    // get the values of the pw field and pw confirm field
+    const passwordValue = document.getElementById("password").value;
+    const passwordConfirmValue = document.getElementById("confirm-password").value;
+    // if the values are not equal, alert the user
+    // otherwise, submit the form
+    if (passwordValue !== passwordConfirmValue) {
+      // prevent the default submission behavior
+      event.preventDefault();
+      alert("Passwords must match!");
+    } else {
+      alert("The form was submitted!");
+    }
+  };
+  // listen for submit event and run password check
+  form.addEventListener("submit", checkPasswordMatch);
+});
+```
+- Given an HTML page that includes a div styled as a square with a red background, write JavaScript that allows a user to drag the square around the screen.
+  - make an element draggable with the draggable attribute and the ondragstart global event handler
+    - `<div id="red-square" draggable="true"></div>`
+  - you need _dragstart_ handler for when user clicks mouse and starts dragging and a _drop_ handler for when the mouse click is released
+  - You can subscribe to one event on the thing you want to drag, the `dragstart` event. That event will allow you to customize the element and save data to the `dataTransfer` object.
+  - You can subscribe to four events for the "drop zone" element(s): `dragenter`, `dragover`, and `dragleave.` If you want the drop event to work, you must subscribe to both `dragenter` and `dragover` and cancel the event using the `preventDefault()` method of the event.
+```html
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Red Square is a Drag</title>
+  <script type="text/javascript">
+    const handleDragStart = e => {
+      e.target.classList.add('is-being-dragged');
+      e.dataTransfer.setData('text/plain', e.target.id);
+      e.dataTransfer.dropEffect = 'move';
+    };
+
+    const handleDragEnter = e => {
+      // Needed so that the "drop" event will fire.
+      e.preventDefault();
+      e.target.classList.add('is-active-drop-zone');
+    };
+
+    const handleDragLeave = e => {
+      e.target.classList.remove('is-active-drop-zone');
+    };
+
+    const handleDragOver = e => {
+      // Needed so that the "drop" event will fire.
+      e.preventDefault();
+    };
+
+    const handleDrop = e => {
+      const id = e.dataTransfer.getData('text/plain');
+      const draggedElement = document.getElementById(id);
+      draggedElement.draggable = false;
+      e.target.appendChild(draggedElement);
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document
+        .getElementById('red-square')
+        .addEventListener('dragstart', handleDragStart);
+
+      const dropZone = document.getElementById('drop-zone');
+      dropZone.addEventListener('drop', handleDrop);
+      dropZone.addEventListener('dragenter', handleDragEnter);
+      dropZone.addEventListener('dragleave', handleDragLeave);
+      dropZone.addEventListener('dragover', handleDragOver);
+    });
+  </script>
+  <style>
+    #drop-zone {
+      align-items: center;
+      border: 1px solid #DDD;
+      color: #CCC;
+      display: flex;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 2em;
+      font-weight: bold;
+      height: 200px;
+      justify-content: center;
+      position: absolute;
+      right: 0;
+      top: 100px;
+      width: 200px;
+    }
+
+    #red-square {
+      background-color: red;
+      box-sizing: border-box;
+      height: 100px;
+      width: 100px;
+    }
+
+    .is-being-dragged {
+      opacity: 0.5;
+      border: 8px dashed white;
+    }
+
+    .is-active-drop-zone {
+      background-color: blue;
+      color:
+    }
+  </style>
+</head>
+<body>
+  <div id="red-square" draggable="true"></div>
+  <div id="drop-zone">drop zone</div>
+</body>
+</html>
+  ```
+- Given an HTML page that has 300 DIVs, create one click event subscription that will print the id of the element clicked on to the console.
+  - `event.target` refers to the element on which the event occurred (e.g. a clicked element).
+  - `event.currentTarget` refers to the element on which the event handler has been attached—sometimes this is the parent
+```javascript
+// Wait for the DOM to load
+window.addEventListener("DOMContentLoaded", event => {
+  // Add a click event listener on the document’s body
+  document.body.addEventListener("click", event => {
+    // console.log the event target’s ID
+    console.log(event.target.id);
+  });
+});
+```
+- Identify the definition of the bubbling principle.
+  - "When an event happens on an element, it first runs the handlers on it, then on its parent, then all the way up on other ancestors."
+  - bubbling is when events “bubble” from the inner element up through parents
+  - not all events bubble (e.g. focus events don't)
+  - events like click or change or keypress, can be put on by prefixing the event name with the word "on". however, you should _never ever ever use that in real production code!_
+    - "Don't ever use the on-event-name attribute version of an event handler. Instead, always use the addEventListener method of the DOM object that you get from something like document.getElementById or document.querySelector."
+  - bubbling can be bad, so you can stop it with `event.stopPropagation()`
+  - but it can also be useful—a single element/handler that will handle all it's children's events
+```html
+<ul id="my-list">
+  <li>This is list item 1.</li>
+  <li>This is list item 2.</li>
+  <li>This is list item 3.</li>
+  <li>This is list item 4.</li>
+  <li>This is list item 5.</li>
+</ul>
+<script>
+  document
+    .getElementById('my-list')
+    .addEventListener('click', e => {
+       // will print out "This is list item X"
+       // depending on which list item is clicked
+      console.log(e.target.innerHTML);
+
+      // always prints "my-list"
+      console.log(e.currentTarget.id);
+    });
+</script>
+```
 
 ## JSON Learning Objectives
 The objective of this lesson is to familiarize you with the JSON format and how to serialize to and deserialize from that format.
@@ -207,7 +430,11 @@ The objective of this lesson is to familiarize you with the JSON format and how 
 The learning objectives for this lesson are that you can:
 
 - Identify and generate valid JSON-formatted strings
+  - _JSON is just a string. It's just text_
+  - JSON always uses double quotes for strings
+    - If your quotation mark delimited string has a quotation mark in it, put a backslash before the interior quotation mark
 - Use `JSON.parse` to deserialize JSON-formatted strings
+  -
 - Use `JSON.stringify` to serialize JavaScript objects
 - Correctly identify the definition of "deserialize"
 - Correctly identify the definition of "serialize"
