@@ -195,6 +195,7 @@ window.addEventListener("DOMContentLoaded", event => {
   - you can add an eventListener for a click on a given `button`
   - update clicks everytime the event occurs
   - `button.onclick` can also be used but this overrides existing event listeners, so the  `addEventListener` method is preferred
+  - the `.detail` attribute can also be used—counts clicks but has other uses
 ```javascript
 window.addEventListener("DOMContentLoaded", event => {
   const button = document.getElementById("increment-count");
@@ -207,9 +208,13 @@ window.addEventListener("DOMContentLoaded", event => {
 });
 ```
 - Given an HTML page that includes `<input type="checkbox" id="on-off"><div id="now-you-see-me">`Now you see me`</div>`, write JavaScript that sets the display of div#now-you-see-me to "none" when input#on-off is checked and to "block" when input#on-off is not checked.
-  - one solution is to change the css style directly when the click event occurs
+  - changing the style in the css to `display: "none"` can be used to hide an element
+  - one solution is to change the css style.display property for the div directly when the click event occurs
   - another solution is to use `classList.remove()` and `classList.add()` in order to change which styles apply to the element when the event occurs
     - this is more efficient when changing many properties at once so you don't have to change them all individually
+  - sort of related, you can use the `data-` attribute to save custom information to a node
+    - and get attributes more generally with `.getAttribute`
+  - also worth mentioning the `.checked attribute` that checkboxes have
 ```javascript
 window.addEventListener("DOMContentLoaded", event => {
   // store the elements we need in variables
@@ -230,6 +235,7 @@ window.addEventListener("DOMContentLoaded", event => {
 });
 ```
 - Given an HTML file that includes `<input id="stopper" type="text" placeholder="Quick! Type STOP">`, write JavaScript that will change the background color of the page to cyan five seconds after a page loads unless the field input#stopper contains only the text "STOP".
+  - when you have an input tag, whatever the user types in will be available to you as the `value` attribute
 ```javascript
 // script.js
 // run when the DOM is ready
@@ -262,6 +268,7 @@ window.addEventListener("DOMContentLoaded", event => {
   - listen for "submit" event with `addEventListener`
   - get the values from the forms with `getElementByID`
   - if the passwords don't match, prevent form submission with `event.preventDefault()`
+    - the default action if you submit a form is to submit the form and refreshes the page
 ```javascript
 // script.js
 window.addEventListener("DOMContentLoaded", event => {
@@ -433,15 +440,21 @@ The learning objectives for this lesson are that you can:
   - _JSON is just a string. It's just text_
   - JSON always uses double quotes for strings
     - If your quotation mark delimited string has a quotation mark in it, put a backslash before the interior quotation mark
+    - any new line characters will be replaced with `\n`
 - Use `JSON.parse` to deserialize JSON-formatted strings
-  -
+  - `JSON.parse(string);`
 - Use `JSON.stringify` to serialize JavaScript objects
+  - `JSON.stringify(object)`
 - Correctly identify the definition of "deserialize"
+  - decoding the text or binary and turning it back into data
 - Correctly identify the definition of "serialize"
+  - serialization is when you transform data into a string or a binary to send to another computer
 - This lesson is relevant because JSON is the lingua franca of data interchange.
 
 
 ## Storage Lesson Learning Objectives
 
 - Write JavaScript to store the value "I <3 falafel" with the key "eatz" in the browser's local storage.
+  - `localStorage.setItem("eatz", "I <3 falafel");`
 - Write JavaScript to read the value stored in local storage for the key "paper-trail".
+  - `const paperTrail = localStorage.getItem("paper-trail");`
