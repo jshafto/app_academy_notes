@@ -13,8 +13,8 @@
   - displays or renders the page content. parses HTML and CSS and render that content
   - networking: handles network calls (e.g. HTTP requests)
   - javascript interpreter: parses and executes js code
-  - UI backend: used for drawing basic widgets like combo bozxes and windows; uses operating system user interface methods
-  - data storage: peristance of data stored in browser (e.g. cookies, localStorage)
+  - UI backend: used for drawing basic widgets like combo boxes and windows; uses operating system user interface methods
+  - data storage: peristance of data stored in browser (e.g. cookies, localStorage, sessionStorage)
     ![from: https://www.html5rocks.com/en/tutorials/internals/howbrowserswork/](./browser-components.png)
 ```javascript
 // Open a new window
@@ -66,6 +66,7 @@ window.onload = () => {
   - put a `<script>` tag importing you external code at the bottom of your html file
   - use `async defer` in the script tag in the html file
 - Label a diagram on the Request/Response cycle.
+  ![from: https://www.oreilly.com/library/view/using-google-app/9780596802462/](./request-response-cycle.png)
 - Explain the Browser's main role in the request/response cycle.
     - Parsing HTML, CSS, JS
     - Rendering that information to the user by constructing a DOM tree and rendering it)
@@ -75,9 +76,16 @@ window.onload = () => {
 - Given a website to visit that depends on cookies (like Amazon), students should be able to go to that site add something to their cart and then delete that cookie using the Chrome Developer tools in order to empty their cart.
   - go into inspector, "application" tab, under cookies
     - delete, refresh page, see what changes
-    - names are cryptic by design, possibly?
+    - names are cryptic by design
   - on amazon, this is the "session-id"
     - unless you're logged in, in which case the cart may be stored somewhere other than just Web Storage API
+  - more generally, cookies are small files (<4KB) that are left on a visitor's computer by a website, via a web browser. they store stateful information. can be modified with javasript through `document.cookie`
+    - `document.cookie = "cookieKey=cookieValue";`
+    - session cookies are lost once the browser window is closed
+    - persistent cookies have an expiration date
+      - when deleting a cookie in javascript, you can use the expiration date to get rid of a cookie—just set the expiration to a date in the past
+        - `document.cookie = "cookieKey=; expires = Thu, 01 Jan 1970 00:00:00 GMT";`
+
 
 ## Element Selection Lesson Learning Objectives
 
@@ -440,7 +448,7 @@ The learning objectives for this lesson are that you can:
   - _JSON is just a string. It's just text_
   - JSON always uses double quotes for strings
     - If your quotation mark delimited string has a quotation mark in it, put a backslash before the interior quotation mark
-    - any new line characters will be replaced with `\n`
+    - doesn't support multi-line strings—any new line characters will be replaced with `\n`
 - Use `JSON.parse` to deserialize JSON-formatted strings
   - `JSON.parse(string);`
 - Use `JSON.stringify` to serialize JavaScript objects
@@ -456,5 +464,8 @@ The learning objectives for this lesson are that you can:
 
 - Write JavaScript to store the value "I <3 falafel" with the key "eatz" in the browser's local storage.
   - `localStorage.setItem("eatz", "I <3 falafel");`
+  - local storage has no expiration date and is deleted when browser cache is cleared (or using javascript). has larger storage than session storage or cookies
+    - this is in contrast to session storage, which lasts only until the browser or tab is closed, and which has a limit of 5MB (still way larger than cookie limit)
+
 - Write JavaScript to read the value stored in local storage for the key "paper-trail".
   - `const paperTrail = localStorage.getItem("paper-trail");`
