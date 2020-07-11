@@ -71,7 +71,7 @@ window.onload = () => {
     - Parsing HTML, CSS, JS
     - Rendering that information to the user by constructing a DOM tree and rendering it)
 - Given several detractors - identify which real-world situations could be implemented with the Web Storage API
-  - the critical piece is that Web Storage API is only useful when we only need the stuff stored client-side
+  - the critical piece is that Web Storage API is useful when we only need the stuff stored client-side
     - shopping cart, forms saving inputs etc.
 - Given a website to visit that depends on cookies (like Amazon), students should be able to go to that site add something to their cart and then delete that cookie using the Chrome Developer tools in order to empty their cart.
   - go into inspector, "application" tab, under cookies
@@ -79,7 +79,7 @@ window.onload = () => {
     - names are cryptic by design
   - on amazon, this is the "session-id"
     - unless you're logged in, in which case the cart may be stored somewhere other than just Web Storage API
-  - more generally, cookies are small files (<4KB) that are left on a visitor's computer by a website, via a web browser. they store stateful information. can be modified with javasript through `document.cookie`
+  - more generally, cookies are small files (<4KB) that are left on a visitor's computer by a website, via a web browser. they store stateful information as key-value pairs. can be modified with javasript through `document.cookie`
     - `document.cookie = "cookieKey=cookieValue";`
     - session cookies are lost once the browser window is closed
     - persistent cookies have an expiration date
