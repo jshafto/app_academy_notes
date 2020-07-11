@@ -14,8 +14,8 @@
   - networking: handles network calls (e.g. HTTP requests)
   - javascript interpreter: parses and executes js code
   - UI backend: used for drawing basic widgets like combo bozxes and windows; uses operating system user interface methods
-  - data storage later: peristance of data stored in browser (e.g. cookies)
-    ![from: http://itwebtutorials.mga.edu/js/chp1/browser-object-model.aspx](./bom-hierarchy.jpg)
+  - data storage: peristance of data stored in browser (e.g. cookies, localStorage)
+    ![from: https://www.html5rocks.com/en/tutorials/internals/howbrowserswork/](./browser-components.png)
 ```javascript
 // Open a new window
 newWindow = window.open("", "", "width=100, height=100");
