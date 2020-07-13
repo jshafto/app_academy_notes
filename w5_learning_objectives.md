@@ -53,13 +53,13 @@
     - `npm install <package-name>@latest` will get the latest version
 ### Given a problem description, use the npm registry to find a reputable package (by popularity and quality stats) that provides functionality to solve that problem.
 - go to [the registry](https://www.npmjs.com/)
-- check out popularity, quality, read description etc.
+- check out popularity, quality, whether it's being maintained, read description etc.
 ### Given a package with vulnerabilities due to outdated dependency versions, use `npm audit` to scan and fix any vulnerabilities.
 - `npm audit` will check the project's dependencies for any reported security vulnerabilities
 - `npm audit fix` will attempt to fix any security vulnerabilities
     - will only work if a fix is available in a minor or patch version of the pack
 ### Write and run an npm script.
-- npm lets you define and run scripts to execute a series of commands you might normally run in the terminal
+- npm lets you define and run scripts to execute a series of commands you might normally run in the terminal (these go in the `package.json` file)
     - e.g. `start` script is used to define the command to start your application. use `npm start` to run
     - `test` script to run mocha
     - for scripts that aren't predefined, use `npm run <script-name>`
