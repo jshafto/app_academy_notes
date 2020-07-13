@@ -40,7 +40,9 @@
 ### Explain the difference between a dependency and a development dependency.
 - a dependency is a package that is needed to successfully run the project in production
 - a development dependency is necessary for doing development work on the project (tools for testing and building the application)
+    - run `npm install --save-dev` to save as a development dependency
 ### Given an existing GitHub repository, clone the repo and use npm to install it's dependencies.
+- run `npm install` in the repository after cloning it to your computer
 ### Use `npm uninstall` to remove a dependency.
 - `npm uninstall <package-name>`
 - this will remove the package and all of its dependencies from the node_modules folder
@@ -50,6 +52,8 @@
 - if there is a new version that is not included in the semver, you can use `npm install <package-name>@<version>` to reintall the dependency and update the semver.
     - `npm install <package-name>@latest` will get the latest version
 ### Given a problem description, use the npm registry to find a reputable package (by popularity and quality stats) that provides functionality to solve that problem.
+- go to [the registry](https://www.npmjs.com/)
+- check out popularity, quality, read description etc.
 ### Given a package with vulnerabilities due to outdated dependency versions, use `npm audit` to scan and fix any vulnerabilities.
 - `npm audit` will check the project's dependencies for any reported security vulnerabilities
 - `npm audit fix` will attempt to fix any security vulnerabilities
