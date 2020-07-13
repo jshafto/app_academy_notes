@@ -5,6 +5,7 @@
 ### Explain what "npm" stands for.
 - node package manager
     - most widely-used package manager for all JavaScript packages, including backend dependencies, frontend dependencies, command-line tools
+    - npm refers command line interface and registry
 - package managers bundle up useful collections of code and distribute them
     - often includes services like:
         - versioning
@@ -13,28 +14,60 @@
         - build pipelines
         - dependency management
 ### Explain the purpose of the `package.json` file and `node_modules` directory.
-- the `package.json` file is available in any project
+- the `package.json` file contains metadata, scripts, and dependencies
+    - a set of suggestions, not requirements for running your project
+    - you can make changes manually (with proper syntax)
+- the `node_modules` directory contains all dependencies for this project, and also all of the dependencies of the dependencies
+    - don't track the `node_modules` folder in git (use `gitignore` file)
+    - the lockfile (`package-lock.json`) acts as a manifest for what's in the `node_modules` directory
 ### Given multiple choices, identify the difference between npm's `package.json` and `package-lock.json` files.
-- ekjels
+- `package.json` is a list of suggested packages
+    - `package-lock.json` wasn't used in earlier versions of npm, so some older npm packages might only have a `package.json` file. in that case, installing the package will install all the dependencies in `package.json`
+- `package-lock.json` contains exact details about installed dependencies
+    - represents exact reproducible npm environment
+    - don't make any manual changes, npm install will handle it
 ### Use `npm --version` to check what version is currently installed and use npm to update itself to the latest version.
-- fsdfs
+- `npm install -g npm@latest` to update to latest version
 ### Use `npm init` to create a new package and `npm install` to add a package as a dependency. Then use `require` to import the module and utilize it in a JavaScript file.
 - `npm init` sets up current directory for npm
     - after you run it, you are prompted to supply fields for `package name`, `version`, `description`,  `entry-point`, `test command`, `git repository`, `keywords`, `author`
     - `npm init --y` will initiate to default values without the setup utility
-- `npm install <name-of-package>`
+    - creates a `package.json` file
+- `npm install` without any further arguments will install all the dependencies listed in the lockfile
 - use `require('<name-of-package>')`
 ### Given a package version number following the MAJOR.MINOR.PATCH semantic versioning spec that may include tilde (`~`) and caret (`^`) ranges, identify the range of versions of the package that will be compatible.
-- fksdjfks
+- the semver `^3.0.0` means that any minor patch versions for the major version `3` will be acceptible
 ### Explain the difference between a dependency and a development dependency.
-- skdjfd
+- a dependency is a package that is needed to successfully run the project in production
+- a development dependency is necessary for doing development work on the project (tools for testing and building the application)
 ### Given an existing GitHub repository, clone the repo and use npm to install it's dependencies.
-- ksjkd
 ### Use `npm uninstall` to remove a dependency.
+- `npm uninstall <package-name>`
+- this will remove the package and all of its dependencies from the node_modules folder
 ### Use `npm update` to update an out-of-date dependency.
+- `npm update <package-name>`
+- `npm update` with will update all dependencies, while respecting each dependency's semver (from the `package.json file)
+- if there is a new version that is not included in the semver, you can use `npm install <package-name>@<version>` to reintall the dependency and update the semver.
+    - `npm install <package-name>@latest` will get the latest version
 ### Given a problem description, use the npm registry to find a reputable package (by popularity and quality stats) that provides functionality to solve that problem.
 ### Given a package with vulnerabilities due to outdated dependency versions, use `npm audit` to scan and fix any vulnerabilities.
+- `npm audit` will check the project's dependencies for any reported security vulnerabilities
+- `npm audit fix` will attempt to fix any security vulnerabilities
+    - will only work if a fix is available in a minor or patch version of the pack
 ### Write and run an npm script.
+- npm lets you define and run scripts to execute a series of commands you might normally run in the terminal
+    - e.g. `start` script is used to define the command to start your application. use `npm start` to run
+    - `test` script to run mocha
+    - for scripts that aren't predefined, use `npm run <script-name>`
+```javascript
+{
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha --watch",
+    "watch": "nodemon index.js"
+  }
+}
+```
 
 
 ## Recursion Lesson Learning Objectives
