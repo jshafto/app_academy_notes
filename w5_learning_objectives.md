@@ -48,7 +48,7 @@
 - this will remove the package and all of its dependencies from the node_modules folder
 ### Use `npm update` to update an out-of-date dependency.
 - `npm update <package-name>`
-- `npm update` with will update all dependencies, while respecting each dependency's semver (from the `package.json file)
+- `npm update` with will update all dependencies, while respecting each dependency's semver (from the `package.json` file)
 - if there is a new version that is not included in the semver, you can use `npm install <package-name>@<version>` to reintall the dependency and update the semver.
     - `npm install <package-name>@latest` will get the latest version
 ### Given a problem description, use the npm registry to find a reputable package (by popularity and quality stats) that provides functionality to solve that problem.
@@ -77,17 +77,62 @@
 ## Recursion Lesson Learning Objectives
 
 ### Given a recursive function, identify what is the base case and the recursive case.
+- base case happens once
+- recursive case contains recursive step that allows it to call itself but one step closer to the base case
 ### Explain when a recursive solution is appropriate to solving a problem over an iterative solution.
+- sometimes a problem makes sense in terms of a base case and a way to get closer to it
+- Consider recursion when your inputs are unpredictable, large, or highly complex. Otherwise, iteration will almost always be the best approach.
+    - this is from the reading, but i don't think this always applies
 ### Write a recursive function that takes in a number, n, argument and calculates the n-th number of the Fibonacci sequence.
+```javascript
+const fib = num => (num === 0 || num === 1) ? 1 : fib(num - 1) + fib(num - 2);
+```
 ### Write a function that calculates a factorial recursively.
+```javascript
+const factorial = num =>  (num === 1) ? 1 : num * factorial(num-1);
+```
 ### Write a function that calculates an exponent (positive and negative) recursively.
+```javascript
+const expo = (num, exp) => {
+    if (exp === 0) return 1;
+    if (exp > 0) return expo(num, exp - 1) * num;
+    if (exp < 0) return expo(num, exp + 1) / num;
+}
+```
 ### Write a function that sums all elements of an array recursively.
+```javascript
+const arrSum = arr => (arr.length === 0) ? 0 : (arr.pop() + arrSum(arr));
+```
 ### Write a function that flattens an arbitrarily nested array into one dimension.
+```javascript
+const flatten = arr => {
+    let flatArr = [];
+    arr.forEach(el => {
+        if (Array.isArray(el)) {
+            flatArr.push(...flatten(el));
+            console.log(flatArr);
+        } else {
+            flatArr.push(el);
+        }
+    });
+    return flatArr;
+}
+
+// more authentically recursive strategy
+const flatten = arr => {
+    if (arr.length === 0) return [];
+    let [head, ...tail] = arr;
+    return (Array.isArray(head)) ? [...flatten(head), ...flatten(tail)] : [head, ...flatten(tail)];
+}
+```
 ### Given a buggy recursive function that causes a RangeError: Maximum call stack and examples of correct behavior, debug the function.
+- check for base case and recursive step
+- make sure that base case exists and will always be reached
 
 ## Classes Lesson Learning Objectives
 
 ### Define a constructor function using ES5 syntax.
+
 ### Define a method on the prototype of a constructor function.
 ### Declare a class using ES6 syntax.
 ### Define an instance method on a class (ES6).
