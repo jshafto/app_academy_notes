@@ -132,20 +132,128 @@ const flatten = arr => {
 ## Classes Lesson Learning Objectives
 
 ### Define a constructor function using ES5 syntax.
+- the name of the constructor is capitalized
+- the function does not explicitly return a value
+- within the body, the `this` keyword references the newly crea
+```javascript
+function Book(title, series, author) {
+  this.title = title;
+  this.series = series;
+  this.author = author;
+}
+```
+- when you actually invoke it:
+    - new empty object is created
+    - new object's prototype is set to the object referenced by the constructor function's `prototype` property
+    - the contructor function is called and `this` is bound to the new object
+    - the new object (instance of class) is returned
+```javascript
+const fellowshipOfTheRing = new Book(
+  'The Fellowship of the Ring',
+  'The Lord of the Rings',
+  'J.R.R. Tolkien');
 
+console.log(fellowshipOfTheRing); // Book { title: 'The Fellowship of the Ring', ... }
+```
 ### Define a method on the prototype of a constructor function.
+- instance methods are defined on the constructor function's prototype method
+```javascript
+// given this constructor function
+function Book(title, series, author) {
+ this.title = title;
+ this.series = series;
+ this.author = author;
+}
+// you could define a method on the prototype like this
+Book.prototype.getInformation = function() {
+ return `${this.title} by ${this.author}`;
+};
+```
 ### Declare a class using ES6 syntax.
+```javascript
+class Book {
+ constructor(title, series, author) {
+   this.title = title;
+   this.series = series;
+   this.author = author;
+ }
+```
 ### Define an instance method on a class (ES6).
+- these methods are the ones that get used on individual instances
+```javascript
+class Book {
+ constructor(title, series, author) {
+   this.title = title;
+   this.series = series;
+   this.author = author;
+ }
+// the method is defined directly within the class declaration
+ getInformation() {
+   return `${this.title} by ${this.author}`;
+ }
+}
+```
 ### Define a static method on a class (ES6).
+- use `static` keyword
+```javascript
+class Book {
+ constructor(title, series, author) {
+   this.title = title;
+   this.series = series;
+   this.author = author;
+ }
+
+ static getTitles(...books) {
+   return books.map((book) => book.title);
+ }
+}
+```
 ### Instantiate an instance of a class using the new keyword.
+```javascript
+let myBook = new Book("Javascript: the Good Parts", null, "Douglas Crockford");
+```
 ### Implement inheritance using the ES6 extends syntax for an ES6 class.
+```javascript
+class Book extends CatalogItem {
+  constructor(title, series, author) {
+    this.title = title;
+    this.series = series;
+    this.author = author;
+  }
+}
+```
 ### Utilize the super keyword in a child class to inherit from a parent class.
-### Utilize module.exports and require to import and export functions and class from one file to another.
+```javascript
+class Book extends CatalogItem {
+  constructor(title, series, author) {
+    super(title, series);
+    this.author = author;
+  }
+}
+```
+### Utilize `module.exports` and `require` to import and export functions and class from one file to another.
+```javascript
+module.exports.functionOrClassName1 = functionOrClassName1;
+module.exports.functionOrClassName2 = functionOrClassName2;
+// OR
+module.exports = {
+  functionOrClassName1,
+  functionOrClassName2
+};
+```
 
 ## Object-Oriented Programming Objectives
 ### Object-Oriented Programming (OOP) is one of the most popular programming paradigms. Additionally, OOP can help beginning engineers learn how to breakdown complex problems.
 
 ### You will be tested on this material by completing a guided project using the following principles. You will also answer questions about their definitions.
-- The three pillars of object-oriented programming
-- The SOLID principles
-- How to apply the Law of Demeter
+#### The three pillars of object-oriented programming
+- encapsulation
+    - hides the complexity of internal mechanisms behind an easy to use interface
+- polymorphism
+    - the ability to use the methods of a parent class on an object from a child class, or to interact with the child instance as though it was an instance of the parent class
+- inheritance
+    - the ability to gain behavior and data from parent class
+- abstraction (secret pillar 4)
+
+#### ---The SOLID principles---
+#### ---How to apply the Law of Demeter---
