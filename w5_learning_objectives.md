@@ -4,39 +4,48 @@
 
 ### Explain what "npm" stands for.
 - node package manager
-    - most widely-used package manager for all JavaScript packages, including backend dependencies, frontend dependencies, command-line tools
-    - npm refers command line interface and registry
+  - most widely-used package manager for all JavaScript packages, including backend dependencies, frontend dependencies, command-line tools
+  - npm refers command line interface and registry
 - package managers bundle up useful collections of code and distribute them
-    - often includes services like:
-        - versioning
-        - change management
-        - tracking use
-        - build pipelines
-        - dependency management
+  - often includes services like:
+    - versioning
+    - change management
+    - tracking use
+    - build pipelines
+    - dependency management
 ### Explain the purpose of the `package.json` file and `node_modules` directory.
 - the `package.json` file contains metadata, scripts, and dependencies
-    - a set of suggestions, not requirements for running your project
-    - you can make changes manually (with proper syntax)
+  - a set of suggestions, not requirements for running your project
+  - you can make changes manually (with proper syntax)
 - the `node_modules` directory contains all dependencies for this project, and also all of the dependencies of the dependencies
-    - don't track the `node_modules` folder in git (use `gitignore` file)
-    - the lockfile (`package-lock.json`) acts as a manifest for what's in the `node_modules` directory
+  - don't track the `node_modules` folder in git (use `gitignore` file)
+  - the lockfile (`package-lock.json`) acts as a manifest for what's in the `node_modules` directory
 ### Given multiple choices, identify the difference between npm's `package.json` and `package-lock.json` files.
 - `package.json` is a list of suggested packages
-    - `package-lock.json` wasn't used in earlier versions of npm, so some older npm packages might only have a `package.json` file. in that case, installing the package will install all the dependencies in `package.json`
+  - `package-lock.json` wasn't used in earlier versions of npm, so some older npm packages might only have a `package.json` file. in that case, installing the package will install all the dependencies in `package.json`
 - `package-lock.json` contains exact details about installed dependencies
-    - represents exact reproducible npm environment
-    - don't make any manual changes, npm install will handle it
+  - represents exact reproducible npm environment
+  - don't make any manual changes, npm install will handle it
 ### Use `npm --version` to check what version is currently installed and use npm to update itself to the latest version.
 - `npm install -g npm@latest` to update to latest version
 ### Use `npm init` to create a new package and `npm install` to add a package as a dependency. Then use `require` to import the module and utilize it in a JavaScript file.
 - `npm init` sets up current directory for npm
-    - after you run it, you are prompted to supply fields for `package name`, `version`, `description`,  `entry-point`, `test command`, `git repository`, `keywords`, `author`
-    - `npm init --y` will initiate to default values without the setup utility
-    - creates a `package.json` file
+  - after you run it, you are prompted to supply fields for `package name`, `version`, `description`,  `entry-point`, `test command`, `git repository`, `keywords`, `author`
+  - `npm init --y` will initiate to default values without the setup utility
+  - creates a `package.json` file
 - `npm install` without any further arguments will install all the dependencies listed in the lockfile
 - use `require('<name-of-package>')`
 ### Given a package version number following the MAJOR.MINOR.PATCH semantic versioning spec that may include tilde (`~`) and caret (`^`) ranges, identify the range of versions of the package that will be compatible.
-- the semver `^3.0.0` means that any minor patch versions for the major version `3` will be acceptible
+- semantic versioning (semver): major.minor.patch (e.g. 1.0.0)
+  - major changes are breaking—they are incompatible with other major versions. (analogous to creating a sequel to a videocame)
+  - minor changes may represent new features. shouldn't break anything, but programs that depend on it may need to tweak. (analogous to adding a new level to a videogame)
+  - patch changes are typically bug fixes (analogous to fixing a typo in the videogame instructions)
+- for semver ranges in `package.json`
+  - `*` indicates "whatever the latest version is".
+  - `>1.0.0` indicates "any version above major version 1".
+  - `^1.0.0` indicates "any version in the 1.x.x range".
+  - `~1.0.0` indicates "any patch version in the 1.0.x range".
+  - `1.0.0` indicates "exactly version 1.0.0".
 ### Explain the difference between a dependency and a development dependency.
 - a dependency is a package that is needed to successfully run the project in production
 - a development dependency is necessary for doing development work on the project (tools for testing and building the application)
@@ -80,10 +89,11 @@
 - base case happens once
 - recursive case contains recursive step that allows it to call itself but one step closer to the base case
 ### Explain when a recursive solution is appropriate to solving a problem over an iterative solution.
-- sometimes a problem makes sense in terms of a base case and a way to get closer to it
-- Consider recursion when your inputs are unpredictable, large, or highly complex. Otherwise, iteration will almost always be the best approach.
-    - this is from the reading, but i don't think this always applies
+- short version (from the reading): "Problems with complex or large inputs may be good candidates for recursion."
+- longer version: most problems can be solved most effectively with an iterative solution, however, problems with inputs that are large, unpredictable, or unusually complex can sometimes have a more elegant recursive solution. more specifically, there are certain data structures and mathematical problems that exhibit self-similarity: that is, they can be broken down into smaller pieces that can be solved using the same algorithm as the larger problem. in these cases, the solution may be best implemented recursively.
 ### Write a recursive function that takes in a number, n, argument and calculates the n-th number of the Fibonacci sequence.
+  - base case: n is 0 or 1
+  - recursive step: n - 1
 ```javascript
 const fib = num => (num === 0 || num === 1) ? 1 : fib(num - 1) + fib(num - 2);
 ```
@@ -232,6 +242,7 @@ class Book extends CatalogItem {
 }
 ```
 ### Utilize `module.exports` and `require` to import and export functions and class from one file to another.
+- to export
 ```javascript
 module.exports.functionOrClassName1 = functionOrClassName1;
 module.exports.functionOrClassName2 = functionOrClassName2;
@@ -241,7 +252,9 @@ module.exports = {
   functionOrClassName2
 };
 ```
-
+- to import
+```javascript
+```
 ## Object-Oriented Programming Objectives
 ### Object-Oriented Programming (OOP) is one of the most popular programming paradigms. Additionally, OOP can help beginning engineers learn how to breakdown complex problems.
 
@@ -255,5 +268,5 @@ module.exports = {
     - the ability to gain behavior and data from parent class
 - abstraction (secret pillar 4)
 
-#### ---The SOLID principles---
-#### ---How to apply the Law of Demeter---
+#### ~~The SOLID principles~~
+#### ~~How to apply the Law of Demeter~~
