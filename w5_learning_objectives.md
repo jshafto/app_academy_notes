@@ -98,10 +98,14 @@
 const fib = num => (num === 0 || num === 1) ? 1 : fib(num - 1) + fib(num - 2);
 ```
 ### Write a function that calculates a factorial recursively.
+  - base case: n is 1
+  - recursive step: num - 1
 ```javascript
 const factorial = num =>  (num === 1) ? 1 : num * factorial(num-1);
 ```
 ### Write a function that calculates an exponent (positive and negative) recursively.
+  - base case: exp is 0
+  - recursive step: when positive n - 1, when negative n + 1
 ```javascript
 const expo = (num, exp) => {
     if (exp === 0) return 1;
@@ -110,10 +114,14 @@ const expo = (num, exp) => {
 }
 ```
 ### Write a function that sums all elements of an array recursively.
+  - base case: arr length is 0
+  - recursive step: arr.pop()
 ```javascript
 const arrSum = arr => (arr.length === 0) ? 0 : (arr.pop() + arrSum(arr));
 ```
 ### Write a function that flattens an arbitrarily nested array into one dimension.
+  - base case: element is not an array
+  - recursive step: spread array
 ```javascript
 const flatten = arr => {
     let flatArr = [];
@@ -127,7 +135,10 @@ const flatten = arr => {
     });
     return flatArr;
 }
-
+```
+  - base case: array length is 0
+  - recursive step: spread head and tail of array
+```javascript
 // more authentically recursive strategy
 const flatten = arr => {
     if (arr.length === 0) return [];
@@ -174,7 +185,7 @@ function Book(title, series, author) {
  this.series = series;
  this.author = author;
 }
-// you could define a method on the prototype like this
+// define a method on the prototype like this
 Book.prototype.getInformation = function() {
  return `${this.title} by ${this.author}`;
 };
@@ -266,7 +277,11 @@ module.exports = {
     - the ability to use the methods of a parent class on an object from a child class, or to interact with the child instance as though it was an instance of the parent class
 - inheritance
     - the ability to gain behavior and data from parent class
-- abstraction (secret pillar 4)
+      - javascript has implementation inheritance (data and methods defined on a parent class are available on objects created from classes that inherit from that parent class)
+      - javascript achieves this using prototypal inheritance:
+        - when you write code that accesses a method/property on an object, if JavaScript doesn't find it, it will search the prototype for that method/property. if it's not there, it will search that object's prototype's prototype until it reaches Object. if it doesn't find it on Object, then you'll get error or undefined
+        - critically, when JavaScript uses a property/method from a prototype that it found through prototypal inheritance, the `this` property still points to the original object on which the first call was made.
+- abstraction (secret pillar 4) (not from the readings)
 
 #### ~~The SOLID principles~~
 #### ~~How to apply the Law of Demeter~~
