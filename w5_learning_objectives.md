@@ -253,7 +253,7 @@ class Book extends CatalogItem {
 }
 ```
 ### Utilize `module.exports` and `require` to import and export functions and class from one file to another.
-- to export
+- to export, add the desired function(s) or class(es) to the `module.exports` property
 ```javascript
 module.exports.functionOrClassName1 = functionOrClassName1;
 module.exports.functionOrClassName2 = functionOrClassName2;
@@ -263,8 +263,10 @@ module.exports = {
   functionOrClassName2
 };
 ```
-- to import
+- to import a local module, use `require()` with a path to the module
+  - module name is the name of the file without the .js file extension
 ```javascript
+const name = require('./name')
 ```
 ## Object-Oriented Programming Objectives
 ### Object-Oriented Programming (OOP) is one of the most popular programming paradigms. Additionally, OOP can help beginning engineers learn how to breakdown complex problems.
