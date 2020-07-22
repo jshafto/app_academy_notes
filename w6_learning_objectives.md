@@ -68,12 +68,94 @@ Host: google.com
 ## Promises Lesson Learning Objectives I
 
 ### Instantiate a `Promise` object
+- a Promise is basically a commitment: it will resolve to a value or an error in the future
+- Promise object takes one parameter: a callback that takes two parameters: a resolve and a reject
+    - resolve and reject are both callbacks
+- Promises have three states, pending, or rejected
+```javascript
+let myPromise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve("the promise has fulfilled");
+        // reject('the promise is rejected')
+    }, 1000)
+})
+// if i try to console log the Promise here, it will just be pending
+
+// `then` is an instance method on promises
+// it lets you specify callback that will run after the promise has resolved,
+// with the value that it resolves with
+// then takes two args, first callback handles successful resolution ()
+// second handles errors ()
+myPromise.then(
+    (result) => {
+        console.log('resolved ',result); // prints "the promise has fulfilled"
+    }, //
+    (reason) => {
+        console.log('rejected ', reason);
+    });
+
+// alternate syntax, use `catch` after the then (or even a string of `then`s)
+// so that you don't have to use both arguments inside then: makes code more
+// legible (`catch` is also a method on a promise)
+myPromise
+    .then((result) => result.length)
+    .then((result) => result * 2)
+    .catch((reason) => console.log('rejected', reason));
+// thens are actually promises, too! you can chain them, with the result
+// returned from one serving as the input for the next. you only need one
+// `catch` at the end
+```
 ### Use `Promises` to write more maintainable asynchronous code
+- promises (and chaining them using `then`) will make code more legible
+    - method chaining allows you to keep a much more legible indentation3
 ### Use the `fetch` API to make `Promise`-based API calls
+- fetch takes 2 parameters: url and an object with options for the request
+-
+```javascript
+const fetch = require('node-fetch');
+
+const MOVIE_API_KEY = "some-api-key";
+
+const url = `https://omdbapi.com/?apikey=${MOVE_API_KEY}&t=fight+club`
+
+fetch(url)
+    .then(res => res.json())
+    .then(json => console.log(json.Actors))
+    .catch(reason => console.log('rejected because', reason))
+```
 
 ## Promises Lesson Learning Objectives II
 
 ### Use `async`/`await` with promise-based functions to write asynchronous code that behaves synchronously.
+- a function marked with the `async` keyword will return a promise
+- use the `await` keyword within an `async` function to use the resolved value of the promise
+    - `await` can only be used inside an `async` function
+- errors can be handled with regular try/catch blocks
+
+```javascript
+// e.g. the following promise-style code....
+function wrapper() {
+  promise1
+    .then(res1 => {
+      console.log(res1);
+      return promise2;
+    })
+    .then(res2 => {
+      console.log(res2);
+      return promise3;
+    })
+    .then(res3 => {
+      console.log(res3);
+    });
+}
+// ... can be refactored to this:
+async function wrapper() {
+  console.log(await promise1);
+  console.log(await promise2);
+  console.log(await promise3);
+  console.log(await promise4);
+}
+```
 
 
 ## HTML Learning Objectives
