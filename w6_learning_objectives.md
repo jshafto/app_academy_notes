@@ -16,7 +16,6 @@
 ### identify common HTTP verbs and status codes
 - verbs: GET, PUT, PATCH, POST, DELETE
 - status codes: (200, 302, 400, 401, 402, 403, 404, 500)
-### demonstrate how HTTP is used by setting up a simple server.
 ### match the header fields of HTTP with a bank of definitions.
 - headers are key/value pairs that define metadata needed to process the request
 - request headers:
@@ -63,7 +62,30 @@ GET / HTTP/1.1
 Host: google.com
 ```
 ### write a very simple HTTP server using ‘http’ in node with paths that will result in the common HTTP status codes.
+- require `http` and use `http.createServer()` to create the server
+    - pass `createServer` one parameter: a function that will listen for requests and can send responses
+        - request listener takes two parameters, request and response
+        - use `response.writeHead(<status-code>, {header: value})` to set header fields (e.g. `res.writeHead(200, { 'Content-Type': 'text/plain' }`))
+        - use `response.write()` to add body of response as string
+        - depending on different properties of the request (e.g. `request.url` or `request.method`), you may want the response to be different
+        - `response.end()` must be called on each response once the message is complete
+    - use `.listen()` method on a server to tell it where to listen for requests. first parameter is the port, second optional parameter is a function
+```javascript
+const http = require('http');
 
+http.createServer((request, response) => {
+    if (request.url === '/200') {
+        response.writeHead(200, {'Content-Type': 'text/plain'})
+        response.write('<h1>Really great request. Thanks for requesting!!!</h1>')
+        response.end();
+    } else {
+        response.writeHead(404);
+        response.end();
+    }
+}).listen(3000, () => console.log("Listening on port 3000"));
+)
+
+```
 
 ## Promises Lesson Learning Objectives I
 
@@ -107,10 +129,11 @@ myPromise
 ```
 ### Use `Promises` to write more maintainable asynchronous code
 - promises (and chaining them using `then`) will make code more legible
-    - method chaining allows you to keep a much more legible indentation3
+    - method chaining allows you to keep a much more legible indentation
+- if you return a Promise from a success or error handler, the next handler isn't called until that Promise completes.
 ### Use the `fetch` API to make `Promise`-based API calls
 - fetch takes 2 parameters: url and an object with options for the request
--
+- returns a promise
 ```javascript
 const fetch = require('node-fetch');
 
@@ -191,7 +214,78 @@ HTML is the language that renders the cross-platform human-computer interfaces t
 
 ## Testing
 ### Explain the "red-green-refactor" loop of test-driven development.
+- test driven development means writing the test first—so you have to think about what you want your code to do and what it would mean for the code to be successful before you start writing it.
+- red phase: plan what code should do when successful and write the test to check that
+    - when you run the test it fails (cause the code isn't written yet—you don't want false positives), so the message is <span style="color:red">red</span>
+- green phase: implement code to make the test pass
+    - when you run tests and they pass, the message is <span style="color:green">green</span>
+- refactor phase: continue improving code: as long as tests continue to pass, you can be sure that your changes don't break your code or any of your collaborators
 ### Identify the definitions of SyntaxError, ReferenceError, and TypeError
+- `SyntaxError` represents an error in the syntax of the code
+- `ReferenceError` represents an error thrown when an invalid reference is made (the variable doesn't exist yet)
+- `TypeError` represents an error when a variable or parameter is not of a valid type
 ### Create, modify, and get to pass a suite of Mocha tests
+- mocha is a test framework, not an assertion library. it works with multiple assertion libraries
+    - test frameworks: run tests and present results
+    - assertion libraries: used to actually write tests
+        - node has a built in assertion library called `Assert`
+        - `Chai` is another assertion library
+            - the chainable functions available will often read like English.
+- file structure should include a `problems` directory and a `test` directory that both live in same project directory
+- import the `assert` module and the
+- use `describe`, `context`, and `it` blocks
+    - `describe`
+        - `describe` is an organizational function. takes two parameters: descriptive string and a callback
+        - the callback passed to describe is where we insert the actual tests
+    - `it`
+        - it goes inside the callback bassed to `describe`
+        - accepts a descriptive string and a callback to set up our test
+    - `context`
+        - an alias for the `describe` function
+        - denotes that we are setting up the context for a particular set of text
+```javascript
+const assert = require("assert");
+const reverseString = require("../problems/reverse-string.js");
+
+
+describe("reverseString()", function() {
+  context("given a string argument", function() {
+    it("should reverse the given string", function() {
+      let test = reverseString("hello");
+      let result = "olleh";
+
+      assert.strictEqual(test, result);
+    });
+
+    it("should reverse the given string and output the same capitalization", function() {
+      let test = reverseString("Apple");
+      let result = "elppA";
+      // assert.strictEqual compares return value of function
+      assert.strictEqual(test, result);
+    });
+  });
+
+  context("given an argument that is not a string", function() {
+      it("should throw a TypeError when given an argument that is not a string", function () {
+          // assert.throws accepts a function as the first argument,
+          // then the error that should be thrown as the second argument
+          assert.throws(() => {reverseString(3)}, TypeError);
+      })
+  });
+});
+```
 ### Use Chai to structure your tests using behavior-driven development principles.
+- to set up chai and chai spies
+```javascript
+// first npm install chai and chai-spies
+const chai = require("chai");
+const expect = chai.expect;
+const spies = require("chai-spies");
+chai.use(spies);
+```
 ### Use the pre- and post-test hooks provided by Mocha
+- `Mocha Hooks` are a way to set up before running the individual tests
+    - `before` happens once before all tests
+    - `beforeEach` happens before each test
+    - `after` happens once at the end
+    - `afterEach` happens after each test
