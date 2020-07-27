@@ -238,11 +238,11 @@ HTML is the language that renders the cross-platform human-computer interfaces t
         - `describe` is an organizational function. takes two parameters: descriptive string and a callback
         - the callback passed to describe is where we insert the actual tests
     - `it`
-        - it goes inside the callback bassed to `describe`
+        - it goes inside the callback passed to `describe`
         - accepts a descriptive string and a callback to set up our test
     - `context`
         - an alias for the `describe` function
-        - denotes that we are setting up the context for a particular set of text
+        - denotes that we are setting up the context for a particular set of tests
 ```javascript
 const assert = require("assert");
 const reverseString = require("../problems/reverse-string.js");
