@@ -229,24 +229,116 @@ function fib(n) {
 - bubble sort is a very simple sorting algorithm with typically poor performance.
 - bubble sort takes quadratic time(`O(n`<sup>`2`</sup>`)`) both on average and in the worst case
 ```javascript
-let bubble = arr => {
-    for (let i = arr.length; i > 0; i --) {
-        for (let j = 0; j < i; j ++) {
-            if (arr[j]>arr[j+1]) {
-                let swap = arr[j];
-                arr[j] = arr[j+1];
-                arr[j+1] = swap;
-            }
-        }
+function bubble(array) {
+  let noSwaps = false;
+  while (noSwaps === false) {
+    noSwaps = true;
+    for (let i = 1; i < array.length; i ++) {
+      if (array[i - 1] > array[i]) {
+        let swap = arr[j];
+        arr[j] = arr[j+1];
+        arr[j+1] = swap;
+        noSwaps = false;
+      }
     }
-    return arr;
+  }
+  return array;
 }
 ```
 ### Explain the complexity of and write a function that performs selection sort on an array of numbers.
+```javascript
+function selection(list) {
+    for(let i = 0; i < list.length; i++) {
+        let min = i;
+        for(let j = i + 1; j < list.length; j++) {
+            if (list[j] < list[min]) {
+                min = j;
+            }
+        }
+        if (min !== i) {
+            let swap = arr[j];
+            arr[j] = arr[j+1];
+            arr[j+1] = swap;
+        }
+    }
+    return list;
+}
+```
 ### Explain the complexity of and write a function that performs insertion sort on an array of numbers.
+```javascript
+function insertion(list) {
+    for (let i = 1; i < list.length; i ++) {
+        let valueToInsert = list[i];
+        let holePosition = i;
+        while (holePosition > 0 && list[holePosition-1] > valueToInsert) {
+            list[holePosition] = list[holePosition-1];
+            holePosition = holePosition -1;
+        }
+        list[holePosition] = valueToInsert;
+  }
+}
+```
 ### Explain the complexity of and write a function that performs merge sort on an array of numbers.
+```javascript
+function mergeTwo(array1, array2) {
+  let result = [];
+  while (array1.length > 0 && array2.length > 0) {
+    if ( array1[0] > array2[0] ) {
+      result.push(array2.shift());
+    } else {
+      result.push(array1.shift())
+    }
+  }
+
+  while (array1.length > 0) result.push(array1.shift());
+  while (array2.length > 0) result.push(array2.shift());
+
+  return result;
+}
+
+function merge(array) {
+  if ( array.length <= 1 ) return array;
+  let l1 = array.slice(0, Math.floor(array.length / 2));
+  let l2 = array.slice(Math.floor(array.length / 2));
+
+  l1 = merge( l1 );
+  l2 = merge( l2 );
+
+  return mergeTwo( l1, l2 );
+}
+```
 ### Explain the complexity of and write a function that performs quick sort on an array of numbers.
+```javascript
+function quickSort(array) {
+  if(array.length <= 1) return array;
+  let pivot = array.shift();
+  let left = array.filter(el => el < pivot);
+  let right = array.filter(el => el >= pivot);
+
+  let leftSorted = quickSort(left);
+  let rightSorted = quickSort(right);
+
+  return [...leftSorted, pivot, ...rightSorted];
+}
+```
 ### Explain the complexity of and write a function that performs a binary search on a sorted array of numbers.
+```javascript
+function binarySearch(list, target) {
+  if (list.length === 0) return false;
+  let slicePoint = Math.floor((list.length) / 2);
+  let leftHalf = list.slice(0, slicePoint);
+  let rightHalf = list.slice(slicePoint+1);
+
+  if (target < list[slicePoint]) {
+    return binarySearch(leftHalf, target);
+  } else if (target > list[slicePoint]) {
+    return binarySearch(rightHalf, target);
+  } else {
+    return true;
+  }
+
+}
+```
 
 ## Lists, Stacks, and Queues
 ### Explain and implement a List.
