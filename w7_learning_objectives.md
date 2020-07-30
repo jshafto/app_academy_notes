@@ -154,8 +154,8 @@ function factorial (n) {
 - bubble sort: `O(n^2)` time complexity, `O(1)` space complexity
 - selection sort: `O(n^2)` time complexity,, `O(1)` space complexity
 - insertion sort: `O(n^2)` time complexity,, `O(1)` space complexity
-- merge sort: `O(n*log(n))` time complexity, `O(n)` space complexity (or `O(1n)` if we do it by keeping track of indices rather than allocating a new array each time)
-- quick sort: `O(n*log(n))` time complexity on average, `O(n`<sup>`2`</sup>`)` worst case. however, worst case is rare. space complexity `O(n*log(n))` usually, but can be tweaked to be `O(log(n))`
+- merge sort: `O(n*log(n))` time complexity, `O(n)` space complexity (or `O(n*log(n))` if we do it by keeping track of indices rather than allocating a new array each time)
+- quick sort: `O(n*log(n))` time complexity on average, `O(n`<sup>`2`</sup>`)` worst case. however, worst case is rare. space complexity `O(n)` naively, but can be tweaked to be `O(log(n))`
 - binary search: `O(n*log(n))` (requires a sorted list)
 ### Identify complexity classes of code
 
