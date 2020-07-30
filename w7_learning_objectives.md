@@ -142,6 +142,10 @@ function expRecursive (n) {
 // branches (invokes itself) would also depend on n
 // in a simple case, you could do that with a for loop
 // can't think of an iterative example here either
+
+// a good example of an O(n!) algorithm would be
+// getting every possible subset of any length from
+// a set of items
 function factorial (n) {
     if (n === 1) return;
 
@@ -355,7 +359,24 @@ function binarySearch(list, target) {
     - remove at index: removes the element at a specific index (this will shift the index of subsequent elements)
     - get at index: returns the value of the element at a given index
 ```javascript
-// example
+// example: linked list
+
+// properties
+// head
+// tail
+// length
+
+// methods:
+// addToTail
+// addToHead
+// insertAt
+// removeTail
+// removeHead
+// removeFrom
+// contains
+// get
+// set
+// size
 ```
 ### Explain and implement a Stack.
 - Data is always last in, first out (like a literal stack of papers, or plates at a buffet line)
