@@ -360,6 +360,7 @@ function binarySearch(list, target) {
     - get at index: returns the value of the element at a given index
 - arrays and linked lists are both implementations of lists, but they have different advantages and disadvantages
     - time complexity
+
   | Operation | Array | Linked List |
   |:--------- |:----- |:----------- |
   | get()     | O(1)  | O(n)        |
