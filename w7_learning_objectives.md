@@ -358,6 +358,13 @@ function binarySearch(list, target) {
     - insert at: add an element at a specific index (this will shift the index of subsequent elements)
     - remove at index: removes the element at a specific index (this will shift the index of subsequent elements)
     - get at index: returns the value of the element at a given index
+- arrays and linked lists are both implementations of lists, but they have different advantages and disadvantages
+    - time complexity
+  | Operation | Array | Linked List |
+  |:--------- |:----- |:----------- |
+  | get()     | O(1)  | O(n)        |
+  | insert () | O(n)  | O(1)        |
+  | remove()  | O(n)  | O(1)        |
 ```javascript
 // example: linked list
 
@@ -377,6 +384,15 @@ function binarySearch(list, target) {
 // get
 // set
 // size
+
+// linked lists consist of nodes
+// nodes have
+
+// properties:
+// value
+// next
+// (for doubly linked lists only) previous
+
 ```
 ### Explain and implement a Stack.
 - Data is always last in, first out (like a literal stack of papers, or plates at a buffet line)
