@@ -341,10 +341,34 @@ function binarySearch(list, target) {
 ```
 
 ## Lists, Stacks, and Queues
+- Abstract data types have structure, properties, and behavior that exist without respect to the details of the language or implementation
+- Different ADTs have different qualities that lend themselves to solving different types of problems
+- Examples include
+    - Sets: collection with no repeated elements, can add, remove, or check whether an element is present
+    - Maps (i.e. dictionaries): specific input yields specific output. can get the value associated with a given key, can set a value for a key, can delete the key value pair given a key
+    - also lists, stacks, queues
 ### Explain and implement a List.
+- every element can be accessed
+- size can change when elements are added and removed
+- operations:
+    - insert at: add an element at a specific index (this will shift the index of subsequent elements)
+    - remove at index: removes the element at a specific index (this will shift the index of subsequent elements)
+    - get at index: returns the value of the element at a given index
+```javascript
+// example
+```
 ### Explain and implement a Stack.
+- Data is always last in, first out (like a literal stack of papers, or plates at a buffet line)
+- Operations
+    - push: adds an element to the top of the stack
+    - pop: removes the top element of the array and returns it
+    - (optional) peek: gets value at the top element without returning it
 ### Explain and implement a Queue.
-
+- Data is always first in, first out (like people waiting in a line, the one that's been waiting the longest goes first)
+- Operations
+    - enqueue: adds element to the end of the queue
+    - dequeue: gets and removes element from the front of the list
+    - (optional) peek: gets the value at the front of the queue without removing it
 ## Graphs and Heaps
 ### Explain and implement a Heap.
 ### Explain and implement a Graph.
