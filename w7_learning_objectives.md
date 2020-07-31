@@ -1,6 +1,6 @@
 # Week 7 Learning Objectives
 
-## GitHub Profile and Projects Objectives
+## GitHub Profile and Projects Objectives (_THESE ARE NOT GOING TO BE ON THE ASSESSMENT_)
 ### GitHub is a powerful platform that hiring managers and other developers can use to see how you create software.
 - Participate in the social aspects of GitHub by starring repositories, following other developers, and reviewing your followers
 - Use Markdown to write code snippets in your README files.
@@ -361,18 +361,18 @@ function binarySearch(list, target) {
 - arrays and linked lists are both implementations of lists, but they have different advantages and disadvantages
     - time complexity
 
-  | Operation | Array | Linked List |
-  |:--------- |:----- |:----------- |
-  | get()     | O(1)  | O(n)        |
-  | insert () | O(n)  | O(1)        |
-  | remove()  | O(n)  | O(1)        |
+  | Operation | Array  | Linked List |
+  | --------- | ------ | ----------- |
+  | get()     | `O(1)` | `O(n)`      |
+  | insert()  | `O(n)` | `O(1)`      |
+  | remove()  | `O(n)` | `O(1)`      |
 ```javascript
 // example: linked list
 
 // properties
-// head
-// tail
-// length
+// head: the first node
+// tail: the last node
+// length: number of nodes
 
 // methods:
 // addToTail
@@ -390,10 +390,175 @@ function binarySearch(list, target) {
 // nodes have
 
 // properties:
-// value
-// next
-// (for doubly linked lists only) previous
+// value: the piece of data stored at that node
+// next: a pointer to the next node in the list
+// (for doubly linked lists only) previous: a pointer to the previous node in the list
+// Nodes don't have methods of their own
 
+class Node {
+    constructor(val) {
+        this.value = val;
+        this.next = null;
+        // doubly linked list only:
+        // this.prev = null;
+    }
+
+}
+
+
+class LinkedList {
+    constructor() {
+        // when a new linked list is created
+        // head and tail are initialized to null
+        // because there is nothing in the list
+        this.head = null;
+        this.tail = null;
+        this.length = 0;
+    }
+
+    // add a new node to the end of the list
+    addToTail(val) {
+        let newTail = new Node(val);
+        if(this.tail !== null) {
+            this.tail.next = newTail;
+        } else {
+            this.head = newTail;
+        }
+        this.tail = newTail;
+        this.length++;
+        return this;
+    }
+
+    // remove the final node in the list
+    removeTail() {
+        // node before the tail should be new tail
+        // nodes pointer should be set to null; no nodes after it
+        if (this.length === 0) return undefined;
+        let currentNode = this.head;
+        let oldTail = this.tail;
+        if (this.length === 1) {
+            this.head = null;
+            this.tail = null;
+
+        } else {
+            while(currentNode.next !== this.tail) {
+                currentNode = currentNode.next;
+            }
+            this.tail = currentNode;
+            currentNode.next = null;
+        }
+        this.length--;
+        return oldTail;
+
+    }
+
+    // add a new node to the start of the list
+    addToHead(val) {
+        let newHead = new Node(val);
+        if (this.head !== null) {
+            newHead.next = this.head;
+        } else {
+            this.tail = newHead;
+        }
+        this.head = newHead;
+        this.length++;
+        return this;
+    }
+
+    // remove the node at the start of the list
+    removeHead() {
+        if(this.length === 0) return undefined;
+        let oldHead = this.head;
+        this.head = this.head.next;
+        if(this.length === 1) {
+            this.tail = null;
+        }
+        this.length--;
+        return oldHead;
+    }
+
+    // contains: return true if a given value is present in the array
+    contains(target) {
+        if(this.length === 0) return false;
+        let currentNode = this.head;
+        for(let i = 0; i < this.length; i++) {
+            if(currentNode.value === target) {
+                return true;
+            }
+            currentNode = currentNode.next;
+        }
+        return false;
+    }
+
+    // get: retrieve the node that is currently at a given index
+    get(index) {
+        // if the index does
+        if(index > this.length) return null;
+        let currentNode = this.head;
+        for(let i = 0; i < index; i++) {
+            currentNode = currentNode.next;
+        }
+        return currentNode;
+    }
+
+    // set: change the value of the existing node at
+    // a given index
+    set(index, val) {
+        // if the node doesn't exist, return false
+        if(index >= this.length) return false;
+        // otherwise use get to access the node
+        // then update its value
+        this.get(index).value = val;
+        return true;
+    }
+
+    // insert: add a new node at an index
+    insert(index, val) {
+        // if the index is too high, return false
+        if (index >= this.length) return false;
+        if (index === 0) {
+            // if the index is 0, this is the same as adding to head
+            this.addToHead(val);
+        } else {
+            // create the node to insert
+            let newNode = new Node(val);
+            // get node before index
+            let prevNode = this.get(index-1);
+            // get the node after the index
+            let nextNode = prevNode.next;
+            // set the pointer on the previous node to be the new node
+            prevNode.next = newNode;
+            // set the pointer on the new node to be the next node
+            newNode.next = nextNode;
+            // increment length
+            this.length++;
+        }
+        return true;
+    }
+
+    // remove a node from a given index
+    remove(index) {
+        // if the index is out of bounds, you can just return undefined
+        if(index >= this.length) return undefined;
+        // if the index is 0, it's the same as removing the head
+        if(index === 0) return this.removeHead();
+
+        // otherwise, get the node before the index
+        let prevNode = this.get(index - 1);
+        let targetNode = prevNode.next;
+        // and set its pointer to the node that comes after the node
+        // that is being removed
+        prevNode.next = targetNode.next;
+        this.length--;
+        return targetNode;
+    }
+
+    // this method literally just returns the
+    // length property
+    size() {
+        return this.length;
+    }
+}
 ```
 ### Explain and implement a Stack.
 - Data is always last in, first out (like a literal stack of papers, or plates at a buffet line)
@@ -401,12 +566,29 @@ function binarySearch(list, target) {
     - push: adds an element to the top of the stack
     - pop: removes the top element of the array and returns it
     - (optional) peek: gets value at the top element without returning it
+```javascript
+// stacks could be implemented with an array or a linked list
+// the interface and behavior remains the same either way,
+// but the underlying implementation details will change
+
+// for the linked list implementation, the node class is
+// exactly the same
+
+
+```
 ### Explain and implement a Queue.
 - Data is always first in, first out (like people waiting in a line, the one that's been waiting the longest goes first)
 - Operations
-    - enqueue: adds element to the end of the queue
-    - dequeue: gets and removes element from the front of the list
-    - (optional) peek: gets the value at the front of the queue without removing it
-## Graphs and Heaps
-### Explain and implement a Heap.
-### Explain and implement a Graph.
+    - enqueue: adds element to the end of the queue. time complexity: `O(1)`
+    - dequeue: gets and removes element from the front of the list. time complexity `O(1)`
+    - (optional) peek: gets the value at the front of the queue without removing it `O(1)`
+```javascript
+// queues could be implemented with an array or a linked list
+// the interface and behavior remains the same either way,
+// but the underlying implementation details will change
+
+// for the linked list implementation, the node class is
+// exactly the same
+
+
+```
