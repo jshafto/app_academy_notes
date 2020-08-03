@@ -433,14 +433,15 @@ class LinkedList {
     removeTail() {
         // node before the tail should be new tail
         // nodes pointer should be set to null; no nodes after it
+        // if there are no elements to remove, return undefined
         if (this.length === 0) return undefined;
-        let currentNode = this.head;
-        let oldTail = this.tail;
         if (this.length === 1) {
             this.head = null;
             this.tail = null;
 
         } else {
+            let oldTail = this.tail;
+            let currentNode = this.head;
             while(currentNode.next !== this.tail) {
                 currentNode = currentNode.next;
             }
@@ -573,6 +574,12 @@ class LinkedList {
 
 // for the linked list implementation, the node class is
 // exactly the same
+class Node {
+    constructor (val) {
+        this.value = val;
+        this.next = null;
+    }
+}
 
 
 ```
