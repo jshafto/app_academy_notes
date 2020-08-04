@@ -22,18 +22,37 @@
 
 ## Binary Trees
 ### Explain and implement a Binary Tree.
-- a binary tree is composed of nodes and edges—it is a subtype of graph
-- a binary tree has no cycles—there is no path that begins and ends at the same node
-- a binary tree has a single parent node or "root" from which all other nodes can be accessed
-- a binary tree is binary in that each node can have no more than two children
+- defining characteristics of a binary tree:
+    - is composed of nodes and edges—it is a subtype of graph
+    - has no cycles—there is no path that begins and ends at the same node
+    - has a single, top-level node or "root" from which all other nodes can be accessed through edges
+    - it is "binary" in that each node can have no more than two children
 - terminology:
-    - parent nodes - nodes with children
+    - parent nodes / internal nodes - nodes with children
     - leaf nodes - nodes without children
     - sibling nodes - nodes with the same parent
     - subtree - any non-root node and all of its children
+    - path - a series of nodes that can be traveled through edges
     - breadth first search - access all the nodes at a given level before descending
-    - depth first search
-
+    - depth first search - access all children of a given child before going on to its sibling
+```javascript
+class TreeNode {
+    constructor(val) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
+    }
+}
+function preorder (root) {
+    return (!root) ? [] : [root.val, ...preorder(root.left), ... preorder(root.right)]
+}
+function inorder (root) {
+    return (!root) ? [] : [ ...inorder(root.left), root.val, ... inorder(root.right)]
+}
+function postorder (root) {
+    return (!root) ? [] : [ ...postorder(root.left), ... postorder(root.right), root.val]
+}
+```
 ### Identify the three types of tree traversals: pre-order, in-order, and post-order.
 - pre-order, in-order, and post-order are all depth first searches
 - pre-order:
@@ -68,5 +87,14 @@
             - just remove leaf
 - examples
 - ![example binary search trees](./bsts.png)
+```javascript
+class TreeNode {
+    constructor(val) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
+    }
+}
+```
 ## Graphs
 ## Network Knowledge
