@@ -251,4 +251,19 @@ function _depthFirstRecur(node, graph, visited) {
 }
 ```
 
-## Network Knowledge
+## Network Models
+### Describe the structure and function of network models from the perspective of a developer.
+
+## IP Suite
+### Identify the correct fields of an IPv6 header.
+### Distinguish an IPv4 packet from an IPv6.
+### Describe the following subjects and how they relate to one another: IP Addresses, Domain Names, and DNS.
+### Identify use cases for the TCP and UDP protocols.
+### Describe the following subjects and how they relate to one another: MAC Address, IP Address, and a port.
+### Identify the fields of a TCP segment.
+### Describe how a TCP connection is negotiated.
+### Explaining the difference between network devices like a router and a switch.
+
+## Network Tools
+### Use traceroute to show routes between your computer and other computers.
+### Use Wireshark to show inspect network traffic.
