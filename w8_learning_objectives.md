@@ -252,54 +252,38 @@ function _depthFirstRecur(node, graph, visited) {
 ```
 
 ## Network Models
-### Describe the structure and function of network models from the perspective of a developer.
-- reference models are high-level overviews of complex topics
-- OSI reference model:
-![network models image](./image-network-models.png)
-- TCP/IP Model vs OSI reference model:
-    - um
-- Key Attributes:
-    - fault tolerant - data transmitted between networks can be cached and resent
-    - end-to-end - there is no single central system that could be taken down and would destroy the whole system
-- packet switching - messages are split up into separate packets, delivered to a destination and reassembled
 
+[Flashcards](https://www.cram.com/flashcards/network-knowledge-11567338) for studying the network stuff. (These are based exactly on the filled out LOs the instructors made. They're online, no download necessary).
 
+### TCP/IP Model (IP Suite)
+1. Given a diagram of the TCP/IP model, be able to label each layer (LITA)
+2. Give a brief description of each layer (What is its major concern and an example)
+3. How does encapsulation apply to the model?
 
-- physical layer
-- network layer
-- transport layer
-## IP Suite
-- IP (internet protocol) is responsible for the end-to-end nature of the internet (no single central system can take whole network down)
-### Identify the correct fields of an IPv6 header.
-- IPv6 is a newer protocol that allows more addresses
+### Internet Protocol
+1. What are the main responsibilities of TCP and of IP?
+    - tcp is for fault tolerance
+    - ip is for the end-to-end distributed nature
+2. What is a packet and what is its general structure?
+    - a packet is a small unit of data for transmission
+    - it has a header and other metadata about the contents
+3. What is the first field in a packet and how is it represented in each version of IP?
+4. Know the two special addresses that we discussed and what they represent.
+    - your local machine is 127:0:0:1 on IPv4
 
-### Distinguish an IPv4 packet from an IPv6.
-- IPv6
-    - uses 8 header fields and starts with  version identifier 0110
-    - uses 128 bits, 8 colon-ed hexadecimal e.g. `2600:6c5e:157f:d48c:138f:e0ba:6fa7:d859`
+### Transport Protocol
+1. What is a port?
+2. What are the two main transport protocols that we discussed? What are the main differences? Give an example use-case for each.
 
-- IPv4
-    - uses at least 13 fields, starts with version identifier 0100
-    - composed of 4 octets (8-bit binary numbers). e.g. 192.18.1.1
-### Describe the following subjects and how they relate to one another: IP Addresses, Domain Names, and DNS.
-- DNS (domain name system) is a distributed approach to providing easily-understood names for internetworked devices. it allows us to look up a specific IP address by its domain.
-    - domain refers to the
-### Identify use cases for the TCP and UDP protocols.
-- TCP (transmission control protocol): is reliable, connection-oriented, slow. it can guarantee that source and destination are identical, but it may be slower because of large headers and because it will resend packets
-    - good for transferring files, visiting websites, streaming audio/video
-- UDP (user datagram protocol: fast, connectionless, but potentially unreliable
-    - good for VoIP, real-time video, gaming—anything where speed is more important than reliability
-### Describe the following subjects and how they relate to one another: MAC Address, IP Address, and a port.
-### Identify the fields of a TCP segment.
-### Describe how a TCP connection is negotiated.
-### Explaining the difference between network devices like a router and a switch.
-- hub - "signal splitter". it duplicates data that it recieved and broadcasts it to all connected devices.
-- switch -  "intelligent hub". it keeps track of mac addresses
-    - flood - broadcast to all devices if the MAC address is not in its table
-    - forward - pass data to specific device
-    - filter
-- router - connects separate networks to each other. maintains a routing table
+### Domain Name System (DNS)
+1. What is a domain?
+2. What is a top-level domain? Subdomain? Know how to parse this information from a URL.
+3. How are domains tracked? How do we know to associate a domain name with a device?
+4. There are several common DNS record types; we discussed five important ones. Be familiar with the letters, what they mean, and the use of each record type.
 
-## Network Tools
-### Use traceroute to show routes between your computer and other computers.
-### Use Wireshark to show inspect network traffic.
+### Network Hardware
+1. Know the three major network hardware types that we discussed.
+2. Be able to describe the function of each device and compare/contrast their uses.
+
+### Binary
+1. Be able to convert number to binary form
