@@ -322,7 +322,7 @@ or less than 200px*/
 ```
 ### Describe and use the `transition` property show animated changes due to class and pseudo-class CSS rule application
 - `transition-property` (which css property to apply the transition to), `transition-duration` (how long the animation takes), `transition-delay` (how long to wait before beginning the animation), or use `transition` to set all three subproperties at once
-- note that most position properties cannot be animated—can animate `margin` or `translate`
+- note that most position properties cannot be animated—can animate `margin` or `transform`
 ```css
 .box {
     border-style: solid;
