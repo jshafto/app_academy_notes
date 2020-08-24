@@ -148,9 +148,10 @@ psql -d [database] < [path_to_file/file.sql]
 cat [path_to_file/file.sql] | psql -d [database]
 ```
 ### How to perform relational database design
+- schemas let us easily visualize database tables and their relationship to each other
 - four major steps:
     1. Define the purpose/entities of the relational DB.
-        - establish purpose, tables, and attributes (i.e. columns and rows)
+        - establish purpose, entities (tables), and attributes (i.e. columns and rows)
     1. Identify primary keys.
         - select columns to contain the unique values that will serve as primary keys for each table
     1. Establish table relationships.
@@ -236,10 +237,329 @@ await pool.query(`
 ```
 
 ## ORM Objectives
+
 ### How to install, configure, and use Sequelize, an ORM for JavaScript
+- important functions:
+    - `.save`
+    - `.associate`
+    - `.findByPk`
+- WALKTHROUGH:
+- specify tables without dependencies first, then specify tables whose dependendencies are met, continue until all tables are specified
+- create user first in postgres `create user username with createdb password 'password';`
+```zsh
+# install sequelize
+npm install sequelize@^5.0.0
+# install sequelize-cli, which auto-generates and manages js files
+# to hold sequelize ORM code
+npm install sequelize-cli@^5.0.0
+# pg library allows sequelize to access postgres database
+npm install pg@^8.0.0
+# setup with script from sequelize-cli
+npx sequelize init
+# which creates this structure:
+# .
+# ├── config
+# │   └── config.json
+# ├── migrations
+# ├── models
+# │   └── index.js
+# ├── node_modules
+# ├── package-lock.json
+# ├── package.json
+# └── seeders
+```
+- in **config.json** file
+    - change all usernames & passwords to the one created earlier, and databases to intended database name
+    - remove `"operatorsAliases": false` it's outdated, and replace it with `"seederStorage": "sequelize"` which keeps track of seed files as they run
+    - set `"dialect": "postgres"`
+```zsh
+# create empty database
+npx sequelize-cli db:create
+# generate a model—creates a model file and a migration file
+# the `type:string` refers to the type of PetType, not the type of data?
+npx sequelize-cli model:generate --name PetType --attributes type:string
+```
+```javascript
+// migrations/#-create-pet-type.js
+'use strict';
+module.exports = {
+up: (queryInterface, Sequelize) => {
+    return queryInterface.createTable('PetTypes', {
+        id: {
+            allowNull: false,
+            autoIncrement: true,
+            primaryKey: true,
+            type: Sequelize.INTEGER
+        },
+        firstName: {
+            allowNull: false,
+            type: Sequelize.STRING(50)
+        },
+        specialSkill: {
+            type: Sequelize.STRING
+        },
+        createdAt: {
+            allowNull: false,
+            type: Sequelize.DATE
+        },
+        updatedAt: {
+            allowNull: false,
+            type: Sequelize.DATE
+        }
+    });
+},
+down: (queryInterface, Sequelize) => {
+      return queryInterface.dropTable('PetTypes');
+  }
+};
+```
+
+```zsh
+npx sequelize-cli db:migrate
+```
+- the pettype.js file in the models folder is the one we'll use when running javascript
+    - add a validation to the models file—if you have a column that in sql is "not null" add `validate: { notEmpty: true}`
+```javascript
+// models/pettype.js
+'use strict';
+module.exports = (sequelize, DataTypes) => {
+  const PetType = sequelize.define('Cat', {
+    type: {
+        type: DataTypes.STRING,
+        validate: {
+            notEmpty: true
+        }
+    }
+  }, {});
+  PetType.associate = function(models) {
+    // associations can be defined here
+  };
+  return PetType;
+};
+```
+```zsh
+npx sequelize-cli model:generate \
+--name Owner \
+--attributes firstName:string,lastName:string
+```
+
+```javascript
+// migrations/#-create-owner.js
+'use strict';
+module.exports = {
+up: (queryInterface, Sequelize) => {
+    return queryInterface.createTable('Owners', {
+        id: {
+            allowNull: false,
+            autoIncrement: true,
+            primaryKey: true,
+            type: Sequelize.INTEGER
+        },
+        firstName: {
+            allowNull: false,
+            type: Sequelize.STRING(50)
+        },
+        lastName: {
+            allowNull: false,
+            type: Sequelize.STRING(50)
+        },
+        createdAt: {
+            allowNull: false,
+            type: Sequelize.DATE
+        },
+        updatedAt: {
+            allowNull: false,
+            type: Sequelize.DATE
+        }
+    });
+},
+down: (queryInterface, Sequelize) => {
+      return queryInterface.dropTable('Owners');
+  }
+};
+module.exports = {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.createTable('Person', {
+      name: Sequelize.DataTypes.STRING,
+      isBetaMember: {
+        type: Sequelize.DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false
+      },
+      userId: {
+        type: Sequelize.DataTypes.INTEGER,
+        references: {
+          model: {
+            tableName: 'users',
+            schema: 'schema'
+          },
+          key: 'id'
+        },
+        allowNull: false
+      },
+    });
+  },
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.dropTable('Person');
+  }
+}
+
+```
+```zsh
+# you can run this to undo a migration
+db:migrate:undo
+```
+- do the same with the **owners.js** file in models
+- next generate model for pet table
+    - that is pretty similar to creating others, but you also need to modify the migration file **create-pet.js** so that it has the relationship to PetTypes for it's petTypeID column. add `references: { model: PetTypes}`
+    - you also need to modify the model files for both pet and pettype to include the association. in **pet.js**, in the `Pet.associate` function `Pet.belongsTo(models.PetType, {foreignKey: 'petTypeId'});`. in **pettype.js**, in `PetType.associate` `PetType.hasMany(models.Pet, { foreignKey: 'petTypeId'});`
+- if you want to set up a many-to-many relationship, it's a little more complicated. still in the associate function, you use the `belongsToMany` with two parameters. first parameter is the `models.Table` (for the actual table you're connecting to, not the intermediate join table), the second parameter is a column mapping (which you get from the join table)
+    - the column mapping object in the `associate` function for the other table will be the opposite
+```javascript
+Pet.associate = function(models) {
+    // simple one-to-many relationship only requires a foreign key in the column mapping object
+    Pet.belongsTo(models.PetType, {foreignKey: 'petTypeId'});
+
+    // this columnMapping object defines the many-to-many relationship
+    const columnMapping = {
+        through: 'petOwner', // join table
+        otherKey: 'ownerId', // key from join table that points to the other entity
+        foreignKey: 'petId' // key from join table that points to this entity
+    }
+
+    // actually set the association
+    Pet.belongsToMany(models.Owner, columnMapping)
+  };
+```
 ### How to use database migrations to make your database grow with your application in a source-control enabled way
+- migration files store sql schema change code permanently
+- relatedly this helps with collaberation: a coworker can setup their own copy of the database by running the migration files, so they wind up with the same schema
+-  **never rollback migrations that have been run on a production server.**
 ### How to perform CRUD operations with Sequelize
+- **C**reate, **R**ead, **U**pdate, **D**estroy
+- create: use `build` method to add a row to database, then `save` to actually create the new record
+    - or alternatively, call the `.create`
+```javascript
+const { sequelize, Cat } = require("./models");
+
+async function main() {
+    const cat = Cat.build({
+        firstName: "Markov",
+        specialSkill: "sleeping",
+        age: 5,
+    });
+    // This actually creates a new `Cats` record in the database. We must
+    // wait for this asynchronous operation to succeed.
+    await cat.save();
+
+    console.log(cat.toJSON());
+
+    await sequelize.close();
+}
+
+main();
+
+
+// alternatively, worth noting you can also put a file into the seeders
+'use strict';
+
+module.exports = {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.bulkInsert('Users', [{
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'demo@demo.com',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }], {});
+  },
+
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.bulkDelete('Users', null, {});
+  }
+};
+```
+- read: get a record using, for example `findByPk` if you have primary key
+```javascript
+const { sequelize, Cat } = require("./models");
+
+async function main() {
+  // Fetch the cat with id #1.
+  const cat = await Cat.findByPk(1);
+  console.log(cat.toJSON());
+
+  await sequelize.close();
+}
+
+main();
+```
+- update: fetch the record as you would for reading, then make changes to the javascript object, then use `save` to commit those changes to the database (don't forget `save` is asynchronous, so you have to `await` it before you close)
+```javascript
+const { sequelize, Cat }  = require("./models");
+
+async function main() {
+  const cat = await Cat.findByPk(1);
+
+  console.log("Old Markov: ");
+  console.log(cat.toJSON());
+
+  // The Cat object is modified, but the corresponding record in the
+  // database is *not* yet changed at all.
+  cat.specialSkill = "super deep sleeping";
+  // Only by calling `save` will the data be saved.
+  await cat.save();
+
+  console.log("New Markov: ");
+  console.log(cat.toJSON());
+
+  await sequelize.close();
+}
+
+main();
+```
+- destroy: use the `destroy` function
+```javascript
+const process = require("process");
+
+const { sequelize , Cat } = require("./models");
+
+async function main() {
+  // get cat
+  const cat = await Cat.findByPk(1);
+  // destroy it
+  await cat.destroy();
+
+  // alternatively, `await Cat.destroy({ where: { id: [3,4,5] } });`
+
+  await sequelize.close();
+}
+
+main();
+```
 ### How to query using Sequelize
+- use `findAll` to get all records
+    - use with parameter `{where: {attribute: "Value"}}` to filter results
+    - use with `Op` object to get not equal `[Op.ne]`, greater than `[Op.gt]`, many other things (like etc)
+- `findOne` will limit query to 1
+- `findCreateFind
+```javascript
+const { sequelize, Cat } = require("./models");
+
+async function main() {
+  // Fetch all cats named Markov.
+  const cats = await Cat.findAll({
+    where: {
+      firstName: ["Markov", "Curie"],
+    },
+  });
+  console.log(JSON.stringify(cats, null, 2));
+
+  await sequelize.close();
+}
+
+main();
+```
+
 ### How to perform data validations with Sequelize
 ### How to use transactions with Sequelize
 
