@@ -173,14 +173,184 @@ ul
 
 ## HTML Forms Objectives
 ### Describe the interaction between the client and server when an HTML form is loaded into the browser, the user submits it, and the server processes it
+- client requests the page, form loads
+- client submits the form, and it makes a request (defined by the method attribute of the form element, typically 'POST') to the url defined by the action attribute of the form element(if the url is relative it gets sent to the server that the user is on), using the `x-www-form-urlencoded` format
+- server recieves the request and validates the data to ensure it meets the standards to be posted (front-end validations are typically not enough)
+- if unsuccessful, a meaningful error message should be displayed to a user
+- if successful, server would typically redirect the user to a different page by responding with a `302 found` status
 ### Create an HTML form using the Pug template engine
+- note: the `extends` key word denotes that the template will inherit from another template. when the template is rendered, it will render all of the content that exists in the layout it extends. the named `block` allows for any child template to redefine the content within that block.
+```pug
+h2 Add Guest
+form(method="post" action="/guest")
+  label(for="fullname") Full Name:
+  input(type="fullname" id="fullname" name="fullname")
+  label(for="email") Email:
+  input(type="email" id="email" name="email")
+  label(for="numGuests") Num Guests
+  input(type="number" id="numGuests" name="numGuests")
+  input(type="submit" value="Add Guest")
+```
 ### Use express to handle a form's POST request
+```javascript
+app.post("/sign-up", (req, res) => {
+  // handle the request here
+});
+```
 ### Use the built-in `express.urlencoded()` middleware function to parse incoming request body form data
+- allows you to automatically parse the form encoding scheme as an object literal
+```javascript
+app.use(express.urlencoded());
+```
 ### Explain what data validation is and why it's necessary for the server to validate incoming data
+- easy to circumvent front end validation checks
+- prevent malicious or simply junk data from being inserted in server
 ### Validate user-provided data from within an Express route handler function
-### Write a custom middleware function that validates user-provided data
-### Use the `csurf` middleware to embed a token value in forms to protect against Cross-Site ### Request Forgery exploits
+```javascript
+app.post("/guest", (req, res) => {
+  const { fullname, email, numGuests } = req.body;
+  const errors = [];
 
+  if (!fullname) {
+    errors.push("Please fill out the full name field.");
+  }
+
+  if (!email) {
+    errors.push("Please fill out the email field.");
+  }
+
+  if (!numGuests || numGuests < 1) {
+    errors.push("Please fill out a valid number for the field for number of guests.");
+  }
+
+  if (errors.length > 0) {
+    res.render("guest-form", { title: "Guest Form", errors });
+    return; // `return` if there are errors.
+  }
+
+  const guest = {
+    fullname,
+    email,
+    numGuests
+  };
+  guests.push(guest);
+  res.redirect("/");
+});
+```
+
+```pug
+extends layout.pug
+
+block content
+  if errors
+    div
+      ul
+        each error in errors
+          li #{error}
+  h2 Add Guest
+  form(method="post" action="/guest")
+    label(for="fullname") Full Name:
+    input(type="fullname" id="fullname" name="fullname")
+    label(for="email") Email:
+    input(type="email" id="email" name="email")
+    label(for="numGuests") Num Guests
+    input(type="number" id="numGuests" name="numGuests")
+    input(type="submit" value="Add Guest")
+```
+### Write a custom middleware function that validates user-provided data
+- a middleware function is a function that takes three arguments, in this specific order:
+  - req: the request object
+  - res: the response object
+  - next: "the next middleware function in the application’s request-response cycle"
+- there is a library for this called 'express-validator'
+```javascript
+const validateGuest = (req, res, next) => {
+  const { fullname, email, numGuests } = req.body;
+  const numGuestsNum = parseInt(numGuests, 10);
+  const errors = [];
+
+  if (!fullname) {
+    errors.push("Please fill out the full name field.");
+  }
+
+  if (!email) {
+    errors.push("Please fill out the email field.");
+  }
+
+  if (!numGuests || numGuests < 1) {
+    errors.push("Please fill out a valid number for number of guests.");
+  }
+
+  req.errors = errors;
+  next();
+};
+app.post("/guest", validateGuest, (req, res) => {
+  const { fullname, email, numGuests } = req.body;
+  if (req.errors.length > 0) {
+    res.render("guest-form", {
+      title: "Guest Form",
+      errors: req.errors,
+      email,
+      fullname,
+      numGuests
+    });
+    return;
+  }
+
+  const guest = {
+    fullname,
+    email,
+    numGuests
+  };
+  guests.push(guest);
+  res.redirect("/");
+});
+```
+### Use the `csurf` middleware to embed a token value in forms to protect against Cross-Site Request Forgery exploits
+- idea: when the form gets submitted, it checks for the secret token to verify that it actually came from a form that the server itself had rendered, and not from some other malicious source
+- `csurf`:
+  - creates a secret value, which is sent to the client and stored as a cookie named `_csrf`.
+  - on every request for a form, a CSRF token is generated from that secret value. CSRF token is sent back to the client as part of the form in a hidden input field.
+  - whenever the client submits the form, the server checks the CSRF token that's embedded in the form and verifies that it is a valid CSRF token by checking it against the secret `_csrf` value that was attached to the request as a cookie.
+```zsh
+npm install csurf@^1.0.0.
+npm install cookie-parser@^1.0.0
+```
+```javascript
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const csrf = require("csurf");
+
+// Create the Express app.
+const app = express();
+
+// Set the pug view engine.
+app.set("view engine", "pug");
+app.use(cookieParser()); // Adding cookieParser() as application-wide middleware
+app.use(express.urlencoded());
+const csrfProtection = csrf({ cookie: true }); // creating csrfProtection middleware to use in specific routes
+```
+
+```pug
+extends layout.pug
+
+block content
+  if errors
+    div
+      ul
+        each error in errors
+          li #{error}
+  h2 Add Guest
+  form(method="post" action="/guest")
+    input(type="hidden" name="_csrf" value=csrfToken)
+    label(for="fullname") Full Name:
+    input(type="fullname" id="fullname" name="fullname" value=fullname)
+    label(for="email") Email:
+    input(type="email" id="email" name="email" value=email)
+    label(for="numGuests") Num Guests
+    input(type="number" id="numGuests" name="numGuests" value=numGuests)
+    input(type="submit" value="Add Guest")
+```
 ## Data-Driven Websites Objectives
 ### Use environment variables to specify configuration of or provide sensitive information for your code
 ### Use the `dotenv` npm package to load environment variables defined in an `.env` file
