@@ -353,7 +353,52 @@ block content
 ```
 ## Data-Driven Websites Objectives
 ### Use environment variables to specify configuration of or provide sensitive information for your code
+- you can set environment variables from the command line (or in the start script) e.g. `PORT=8080 NODE_ENV=development node app.js`
+  - among other purposes sequelize uses the `NODE_ENV` variable to determine which section of the config.json file it will use for database configuration. you can specify it in the start script
+```javascript
+// to set it env variables if they aren't already specified
+const port = process.env.PORT || 8080;
+```
 ### Use the `dotenv` npm package to load environment variables defined in an `.env` file
+```zsh
+npm install dotenv --save-dev
+```
+- add `.env` file to the root of your project (DON'T FORGET TO PUT IT IN GIT IGNORE), e.g.
+```
+PORT=8080
+DB_USERNAME=mydbuser
+DB_PASSWORD=mydbuserpassword
+DB_DATABASE=mydbname
+DB_HOST=localhost
+```
+- load env variables from the .env file in your app
+```javascript
+require('dotenv').config();
+```
+- OR use dotenv in the npm start script
+- or use a config module
+```javascript
+// config.js
+
+module.exports = {
+  environment: process.env.NODE_ENV || 'development',
+  port: process.env.PORT || 8080,
+  db: {
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    host: process.env.DB_HOST,
+  },
+};
+```
+
+```javascript
+// Load the environment variables from the .env file
+require('dotenv').config();
+
+// Get the port environment variable value.
+const { port } = require('./config');
+```
 ### Recall that Express cannot process unhandled Promise rejections from within route handler (or middleware) functions;
 ### Use a Promise `catch` block or a `try`/`catch` statement with `async`/`await` to properly handle errors thrown from within an asynchronous route handler (or middleware) function
 ### Write a wrapper function to simplify catching errors thrown within asynchronous route handler (or middleware) functions
