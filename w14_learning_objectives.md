@@ -496,6 +496,52 @@ const Tacos = ({ match }) => (
 ## React Context Objectives
 
 ### Use Context to share and manage global information within a React application
+```jsx
+//create a context
+// PupContext.js
+import { createContext } from 'react';
+
+const PupContext = createContext();
+
+export default PupContext;
+```
 ### Create a wrapper component with `Context.Provider` to set a component's default context
+- `Provider` component expects value prop to set the context information passed throughout application
+```jsx
+this.state = {
+  puppyType: speedy,
+};
+
+render() {
+  return (
+    <PupContext.Provider value={this.state}>
+      <App />
+    </PupContext.Provider>
+  );
+}
+```
 ### Create a wrapper component with `Context.Consumer` to share the global context through render props
+```jsx
+const ProfileWithContext = {} => (
+  <ColorContext.Consumer>
+    {value => <Profile updateColor/>}
+  </ColorContext.Consumer>
+)
+```
 ### Create and pass a method through Context to update the global state from a nested component
+- define an update method and pass it into the state
+```jsx
+// on the component whose render includes the Provider
+updateColor = (color) => {
+  this.setState({color});
+}
+render () {
+  return (
+    <ColorContext.Provider value={this.state}>
+    {/* this.state includes color and the updateColor method*/}
+      <App color={this.state.color} />
+    </ColorContext.Provider>
+  )
+}
+```
+- a descendent component that has a `contextType` or a `context.Consumer` can access the method and update the state
