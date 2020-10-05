@@ -335,14 +335,308 @@ store.subscribe(() => {
 ## Redux: Part 3
 
 ### Describe what a higher-order component (HOC) is
+- a pattern for reusing component logic. they:
+  - Define and return functions
+  - Accept callbacks as arguments
+  - Or do both.
+- higher order components allow you to dynamically generate wrapper components
 ### Write a higher-order component (HOC) that accepts a component as an argument and returns a new component
-### Use the React-Redux library's `<Provider />` component to make your Redux store available to any nested components that have been wrapped in the `connect` function
+```jsx
+export const ProtectedRoute = ({ component: Component, path, currentUserId, exact }) => {
+  return (
+    <Route
+      path={path}
+      exact={exact}
+      render={(props) =>
+        currentUserId ? <Component {...props} /> : <Redirect to="/login" />
+      }
+    />
+  );
+};
+
+export const AuthRoute = ({ component: Component, path, currentUserId, exact }) => {
+  return (
+    <Route
+      path={path}
+      exact={exact}
+      render={(props) =>
+        currentUserId ? <Redirect to="/" /> : <Component {...props} />
+      }
+    />
+  );
+};
+```
+### Use the React-Redux library's `<Provider />` component to make your Redux store available to any nested components that have been wrapped in the `connect` function\
+- to use the `connect` function from the React-Redux library, first add a `<Provider />` component to your React application.
+- install the react-redux package
+```shell
+npm install react-redux
+```
+- `<Provider />` is a React component which can wrap rest of the application.
+  - receives the `store` as a `prop` and sets a store `context`
+  - all components can access the store context because the `Provider` wraps the whole application
+```jsx
+// ./src/index.js
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import './index.css';
+import App from './App';
+import store from './store';
+
+ReactDOM.render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+```
 ### Use the React-Redux library's `connect` function to give a component access to a Redux store
+- `connect` is a higher order component that returns a function
+- replaces the manually created container component and eliminates the boilerplate code
+- connects `WrappedComponent` to the Redux store by:
+  - defining the `componentDidMount` and `componentWillUnmount` lifecycle method implementations necessary for managing the subscription to the store to render WrappedComponent when state is updated; and
+  - passing slices of state and functions to dispatch actions down to `WrappedComponent` using props.
+```jsx
+// long version
+const createConnectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps
+);
+
+const ConnectedComponent = createConnectedComponent(MyComponent);
+
+export default ConnectedComponent;
+
+// this is how it's typically written
+export default connect(mapStateToProps, mapDispatchToProps)(MyComponent);
+```
+```jsx
+// Defining mapStateToProps(state, [ownProps])
+//  tells connect how to map the state into your component's props
+const MyComponent = ({ name }) => (
+  <div>{name}</div>
+);
+
+const mapStateToProps = (state) => ({
+  name: state.name;
+});
+
+const ConnectedComponent = connect(mapStateToProps)(MyComponent);
+
+// example with ownProps
+const mapStateToProps = (state, ownProps) => ({
+  name: state.users[ownProps.match.params.userId].name,
+});
+
+const ConnectedComponent = connect(mapStateToProps)(MyComponent);
+```
+
+```jsx
+// Defining mapDispatchToProps
+// accepts the store's dispatch method and returns an object containing functions that can be called to dispatch actions to the store
+const deleteTodo = (id) => ({ type: 'DELETE_TODO', id }); // action creators
+const addTodo = (msg) => ({ type: 'ADD_TODO', msg });
+
+const mapDispatchToProps = (dispatch) => ({
+  handleDelete: (id) => dispatch(deleteTodo(id)),
+  handleAdd: (msg) => dispatch(addTodo(msg))
+});
+
+const ConnectedComponent = connect(null, mapDispatchToProps)(MyComponent);
+```
 ### Write a selector to extract and format information from state stored in a Redux store
+```jsx
+// ./src/reducers/farmersSelectors.js
+
+// Returns the state's farmers as an array of farmer objects.
+export const getAllFarmers = ({ farmers }) => (
+  Object.values(farmers)
+);
+
+// Returns the state's farmers as an array of farmer objects,
+// filtered by their name.
+export const getFilteredFarmers = ({ farmers, filter }) => {
+  const lowerCaseFilter = filter.toLowerCase();
+  return Object.values(farmers).filter(
+    (farmer) => farmer.name.toLowerCase().includes(lowerCaseFilter)
+  );
+};
+
+// Returns the selected farmer object or an empty farmer object
+// if no farmer exists with given id.
+export const selectFarmer = ({ farmers }, id) => {
+  const nullFarmer = {
+    id: null,
+    name: '',
+    paid: false
+  };
+  return farmers[id] || nullFarmer;
+};
+```
 ### Use the React-Redux library's `applyMiddleware` function to configure one or more middleware when creating a store
+- when a dispatch is made, middleware intercepts the action before it reaches the reducer. it may then
+  - resolve the action itself (for example, by making an AJAX request),
+  - pass along the action (if the middleware isn't concerned with it),
+  - generate a side effect (such as logging debugging information),
+  - send another dispatch (if the action triggers other actions),
+  - or some combination thereof.
+```jsx
+// ./src/store.js
+
+import { createStore, applyMiddleware } from 'redux';
+import logger from 'redux-logger';
+
+import rootReducer from './reducers/rootReducer';
+
+const configureStore = (preloadedState = {}) => {
+  return createStore(
+    rootReducer,
+    preloadedState,
+    applyMiddleware(logger),
+  );
+};
+
+export default configureStore;
+```
+
+```jsx
+// function signature (set of inputs and outputs to a function)
+const middleware = store => next => action => {
+ // side effects, if any
+ return next(action);
+};
+```
+
+```jsx
+//example custom logger middleware function
+const logger = store => next => action => {
+  console.log('Action received:', action);
+  console.log('State pre-dispatch:', store.getState());
+
+  let result = next(action);
+
+  console.log('State post-dispatch:', store.getState());
+
+  return result;
+};
+```
 ### Write a thunk action creator to make an asynchronous request to an API and dispatch an action when the response is received
+- if you want the source of all changes to state to be action creators, you need action creators that can handle asynchronicity
+- instead of returning a pojo, thunks return functions which, when passed `dispatch` as an argument, can dispatch one or more actions (immediately or later)
+- this require middleware (`redux-thunk`) so that actions of the type `function` will be handled appropriately
+```jsx
+//apply middleware to store
+// ./src/store.js
+
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import logger from 'redux-logger';
+
+import rootReducer from './reducers/rootReducer';
+
+const configureStore = (preloadedState = {}) => {
+  return createStore(
+    rootReducer,
+    preloadedState,
+    applyMiddleware(thunk, logger),
+  );
+};
+
+export default configureStore;
+```
+```jsx
+// use a thunk action creator to retrieve data asunchronously
+// ./src/actions/fruitActions.js
+
+import { FRUIT_STAND_API_BASE_URL } from '../config';
+
+export const RECEIVE_FRUITS = 'RECEIVE_FRUITS';
+
+export const fetchFruits = () => (dispatch) => (
+  fetch(`${FRUIT_STAND_API_BASE_URL}/fruits`)
+    .then((res) => res.json())
+    .then((data) => {
+      dispatch(receiveFruits(data.fruits));
+    })
+);
+
+const receiveFruits = (fruits) => {
+  return {
+    type: RECEIVE_FRUITS,
+    fruits,
+  };
+};
+```
+```jsx
+// to dispatch the action,
+// ./src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+
+import './index.css';
+import App from './App';
+import configureStore from './store';
+import { fetchFruits } from './actions/fruitActions';
+
+const store = configureStore();
+store.dispatch(fetchFruits());
+
+ReactDOM.render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+```
 ### Describe a situation where defining multiple containers for a single component is advantageous
+
 ### Configure a React application to use the Redux development tools
+```shell
+npm install redux-devtools-extension
+```
+```jsx
+// if you are not using middleware
+  import { createStore } from 'redux';
++ import { devToolsEnhancer } from 'redux-devtools-extension';
+
+  import rootReducer from './reducers/rootReducer';
+
+  const configureStore = () => {
+    return createStore(
+      rootReducer,
++     devToolsEnhancer()
+    );
+  };
+
+  export default configureStore;
+
+// if you are using middleware
+ // ./src/store.js
+
+  import { createStore, applyMiddleware } from 'redux';
+  import thunk from 'redux-thunk';
+  import logger from 'redux-logger';
++ import { composeWithDevTools } from 'redux-devtools-extension';
+
+  import rootReducer from './reducers/rootReducer';
+
+  const configureStore = () => {
+    return createStore(
+      rootReducer,
++     composeWithDevTools(applyMiddleware(thunk, logger))
+-     applyMiddleware(thunk, logger)
+    );
+  };
+
+  export default configureStore;
+```
 
 ## Hooks
 ### React:
